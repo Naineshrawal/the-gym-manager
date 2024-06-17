@@ -14,9 +14,12 @@ export default {
           neutral: '#118ab2',
           dark: '#073b4c',
         }
-      }
+      },
+      backgroundImage:{
+        hero: 'url("/images/gym-hero-bg.png")'
+      },
+      
     },
   },
   plugins: [],
 }
-
