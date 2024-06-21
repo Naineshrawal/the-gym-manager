@@ -1,31 +1,49 @@
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { auth } from '../firebase/Firebase';
 
 function LoginForm({ userType }) {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate()
 
-  const handleSubmit = (e) => {
+  const goToDashboard = async (e) => {
     e.preventDefault();
     // Implement authentication logic here
-    console.log(`${userType} Login - Username: ${username}, Password: ${password}`);
+    try{
+      const userCredentials = await signInWithEmailAndPassword(auth, email, password)
+      if(userCredentials.user.isApproved){
+          navigate('/dashboard')
+      }else{
+        navigate('/')
+      }
+      console.log(userCredentials);
+    }
+    catch(err){
+      console.log(err);
+    }
+    
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form className="space-y-6">
       <div>
-        <label className="block text-black">Username</label>
+        <label htmlFor='email' className="block text-black">Email</label>
         <input 
-          placeholder='email / username'
+          id='email'
+          placeholder='email'
           type="text" 
-          value={username} 
-          onChange={(e) => setUsername(e.target.value)} 
+          value={email} 
+          onChange={(e) => setEmail(e.target.value)} 
           required 
           className="w-full text-gray-400  p-2 border border-gray-300 outline-none rounded mt-1"
         />
       </div>
       <div>
-        <label className="block text-black">Password</label>
+        <label htmlFor='password' className="block text-black">Password</label>
         <input 
+          id='password'
           placeholder='type your password'
           type="password" 
           value={password} 
@@ -34,7 +52,7 @@ function LoginForm({ userType }) {
           className="w-full p-2 border border-gray-300 rounded mt-1 outline-none text-gray-400"
         />
       </div>
-      <button type="submit" className="w-full bg-brand-primary text-white p-2 rounded hover:bg-brand-accent">Login</button>
+      <button onClick={goToDashboard} type="button" className="w-full bg-brand-primary text-white p-2 rounded hover:bg-brand-accent">Login</button>
     </form>
   );
 }

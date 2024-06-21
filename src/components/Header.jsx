@@ -1,16 +1,27 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useState } from 'react';
 import React from 'react';
 import { Link } from 'react-router-dom';
+// import {  } from '@fortawesome/free-solid-svg-icons/faBars';
+import { faX, faBars } from '@fortawesome/free-solid-svg-icons';
+
 
 function Header() {
+  const [hidden, setHidden] = useState("hidden")
   return (
-    <header className="w-full bg-brand-dark text-white py-4">
+    <header className="w-full bg-brand-dark text-white py-4 relative">
       <div className="section-container flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-brand-primary">THE GYM MANAGER</h1>
-        <nav>
-          <ul className="flex space-x-4">
-            <li><Link to="/" className="hover:text-brand-secondary">Home</Link></li>
-            <li><Link to="/about" className="hover:text-brand-secondary">About</Link></li>
-            <li><Link to="/contact" className="hover:text-brand-secondary">Contact</Link></li>
+      <FontAwesomeIcon onClick={()=>setHidden("block")} icon={faBars} className={`absolute block sm:hidden right-5 top-5 text-xl font-medium cursor-pointer`} />
+      <FontAwesomeIcon onClick={()=>setHidden("hidden")} icon={faX} className={`absolute ${hidden} z-10 right-5 top-5 text-xl font-medium cursor-pointer`} />
+        <Link to={'/'}><img width={'100px'} src="/images/logo.png" alt="logo" /></Link>
+        <nav className={`fixed ${hidden} sm:block sm:static bg-brand-dark/95 p-20 sm:p-0 top-0 right-0`} >
+          <ul className="sm:flex space-y-3 sm:space-y-0 sm:space-x-4">
+            <li><Link to="/" className="hover:text-brand-secondary text-xl">Home</Link></li>
+            <li><Link to="/about" className="hover:text-brand-secondary text-xl">About</Link></li>
+            <li><Link to="/contact" className=" text-xl">Contact</Link></li>
+            <li><Link to="/store" className="hover:text-brand-secondary text-xl">Store</Link></li>
+            <li><Link to="/cart" className="hover:text-brand-secondary text-xl">Cart</Link></li>
+            <li><Link to="/dashboard" className="hover:text-brand-secondary text-xl">Dashboard</Link></li>
           </ul>
         </nav>
       </div>

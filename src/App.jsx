@@ -9,30 +9,39 @@ import MemberLogin from './pages/MemberLogin';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import './index.css';
-import LoginForm from './components/LoginForm';
 import Dashboard from './pages/Dashboard';
+import SupplementsStore from './pages/SupplementsStore';
+import Cart from './pages/Cart';
+import { CartProvider } from './context/CartContext.jsx'
+import { UserProvider } from './context/UserContext.jsx'
+
 
 function App() {
   return (
     <Router>
+    <CartProvider>
+    <UserProvider>
       <div className="flex flex-col min-h-screen">
-        <Header />
-        
+        <Header />        
+            
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Home  />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/admin-login" element={<AdminLogin />} />
-            <Route path="/login-form" element={<LoginForm />} />
             <Route path="/trainer-login" element={<TrainerLogin />} />
             <Route path="/member-login" element={<MemberLogin />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/store" element={<SupplementsStore />} />
+            <Route path="/cart" element={<Cart />} />
           </Routes>
         
         <Footer />
       </div>
+    </UserProvider>
+    </CartProvider>
     </Router>
-  );
+ );
 }
 
 export default App;
