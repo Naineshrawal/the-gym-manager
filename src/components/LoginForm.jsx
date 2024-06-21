@@ -13,11 +13,9 @@ function LoginForm({ userType }) {
     // Implement authentication logic here
     try{
       const userCredentials = await signInWithEmailAndPassword(auth, email, password)
-      if(userCredentials.user.isApproved){
-          navigate('/dashboard')
-      }else{
-        navigate('/')
-      }
+        setEmail('')
+        setPassword('')
+      
       console.log(userCredentials);
     }
     catch(err){

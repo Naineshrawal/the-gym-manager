@@ -14,6 +14,8 @@ import SupplementsStore from './pages/SupplementsStore';
 import Cart from './pages/Cart';
 import { CartProvider } from './context/CartContext.jsx'
 import { UserProvider } from './context/UserContext.jsx'
+// import DashboardLayout from './pages/DashboardLayout.jsx';
+import Overview from './components/Overview.jsx';
 
 
 function App() {
@@ -31,7 +33,9 @@ function App() {
             <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="/trainer-login" element={<TrainerLogin />} />
             <Route path="/member-login" element={<MemberLogin />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard" element={<Dashboard />}>
+              <Route path="overview" element={<Overview />} />
+            </Route>
             <Route path="/store" element={<SupplementsStore />} />
             <Route path="/cart" element={<Cart />} />
           </Routes>
