@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faUser, faDumbbell, faCalendarCheck, faSuitcase, faUserFriends, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { signOut } from 'firebase/auth';
-import { auth } from '../firebase/Firebase';
+import { faHome, faUser, faDumbbell, faCalendarCheck, faSuitcase, faUserFriends, faChevronRight, faReceipt, faBell } from '@fortawesome/free-solid-svg-icons';
+
 import { useUser } from '../context/UserContext';
 import { Link, Outlet } from 'react-router-dom';
 
@@ -13,9 +12,9 @@ const Dashboard = () => {
 
   const {user} = useUser()
 
-  console.log(user);
+ 
   if (!user) {
-    return <p>Loading...</p>;
+    return <div className='flex justify-center text-2xl font-bold text-brand-dark items-center py-10'><img src="/images/loading-icon.svg" width={'48px'} alt="loading-icon" /> <span>Loading...</span> </div>
   }
 
   const toggleWidth = ()=>{
@@ -30,11 +29,7 @@ const Dashboard = () => {
     }
   }
   
-  const logout =  ()=>{
-    signOut(auth)
-    
-    console.log("user sign out");
-  }
+  
   return (
     <div className="flex  bg-gray-100">
       <aside className={`w-${asideWidth} duration-500 ease-in-out  top-0  bg-[#12313b] text-white flex flex-col`}>
@@ -46,86 +41,116 @@ const Dashboard = () => {
           
           <div className={`p-4 overflow-hidden ${hidden} text-xl font-bold`}>Gym Management System</div>
           <ul className='overflow-hidden'>
-            <Link to="/dashboard/overview" >
+            {user?.role == 'admin' &&
+            (<>
+              
+            <Link to="overview" >
             <li className="px-3 py-4 hover:bg-brand-primary">
               <FontAwesomeIcon icon={faHome} className="mr-2" />
               <span className={`${hidden}`}>Overview</span>
             </li>
             </Link>
-            <Link to="/dashboard/trainers" >
+            <Link to="trainers" >
             <li className="px-3 py-4 hover:bg-brand-primary">
               <FontAwesomeIcon icon={faUserFriends} className="mr-2" />
               <span className={`${hidden}`}>Trainers</span>
             </li>
             </Link>
-            <Link to="/dashboard/packages">
+            <Link to="packages">
             <li className="px-3 py-4 hover:bg-brand-primary">
               <FontAwesomeIcon icon={faSuitcase} className="mr-2" />
               <span className={`${hidden}`}>Packages</span>
             </li>
             </Link>
-            <Link to="/dashboard/members">
+            <Link to="members">
             <li className="px-3 py-4 hover:bg-brand-primary">
               <FontAwesomeIcon icon={faUser} className="mr-2" />
               <span className={`${hidden}`}>Members</span>
             </li>
             </Link>
-            <Link to="/dashboard/attendance">
+            <Link to="attendance">
             <li className="px-3 py-4 hover:bg-brand-primary">
               <FontAwesomeIcon icon={faCalendarCheck} className="mr-2" />
               <span className={`${hidden}`}>Attendance</span>
             </li>
             </Link>
-            <Link to="/dashboard/equipments">
+            <Link to="equipments">
             <li className="px-3 py-4 hover:bg-brand-primary">
               <FontAwesomeIcon icon={faDumbbell} className="mr-2" />
               <span className={`${hidden}`}>Equipments</span>
             </li>
             </Link>
-            <Link to="/dashboard/reports">
+            <Link to="reports">
             <li className="px-3 py-4 hover:bg-brand-primary">
-              <FontAwesomeIcon icon={faDumbbell} className="mr-2" />
+              <FontAwesomeIcon icon={faReceipt} className="mr-2" />
               <span className={`${hidden}`}>Reports</span>
             </li>
             </Link>
-            <Link to="/dashboard/notifications">
+            <Link to="notifications">
             <li className="px-3 py-4 hover:bg-brand-primary">
-              <FontAwesomeIcon icon={faDumbbell} className="mr-2" />
+              <FontAwesomeIcon icon={faBell} className="mr-2" />
               <span className={`${hidden}`}>Notifications</span>
             </li>
             </Link>
+            
+            </>)
+            }
+            {user?.role === 'trainer' &&
+            (<>
+            <Link to="overview" >
+              <li className="px-3 py-4 hover:bg-brand-primary">
+                <FontAwesomeIcon icon={faHome} className="mr-2" />
+                <span className={`${hidden}`}>Overview</span>
+              </li>
+            </Link>
+            <Link to="packages">
+            <li className="px-3 py-4 hover:bg-brand-primary">
+              <FontAwesomeIcon icon={faSuitcase} className="mr-2" />
+              <span className={`${hidden}`}>Packages</span>
+            </li>
+            </Link>
+            <Link to="members">
+            <li className="px-3 py-4 hover:bg-brand-primary">
+              <FontAwesomeIcon icon={faUser} className="mr-2" />
+              <span className={`${hidden}`}>Members</span>
+            </li>
+            </Link>
+            <Link to="equipments">
+            <li className="px-3 py-4 hover:bg-brand-primary">
+              <FontAwesomeIcon icon={faDumbbell} className="mr-2" />
+              <span className={`${hidden}`}>Equipments</span>
+            </li>
+            </Link>
+            </>)
+            }
+            {user?.role === 'member' &&
+            (<>
+            <Link to="overview" >
+              <li className="px-3 py-4 hover:bg-brand-primary">
+                <FontAwesomeIcon icon={faHome} className="mr-2" />
+                <span className={`${hidden}`}>Overview</span>
+              </li>
+            </Link>
+            <Link to="packages">
+            <li className="px-3 py-4 hover:bg-brand-primary">
+              <FontAwesomeIcon icon={faSuitcase} className="mr-2" />
+              <span className={`${hidden}`}>Packages</span>
+            </li>
+            </Link>
+            
+            <Link to="equipments">
+            <li className="px-3 py-4 hover:bg-brand-primary">
+              <FontAwesomeIcon icon={faDumbbell} className="mr-2" />
+              <span className={`${hidden}`}>Equipments</span>
+            </li>
+            </Link>
+            </>)
+            }
           </ul>
         </nav>
       </aside>
       <main className="flex-grow p-6">
         <Outlet/>
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold">Hello {user.name} </h1>
-          <button onClick={logout} className="bg-brand-primary text-white px-4 py-2 rounded">Logout</button>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-          <div className="bg-white p-4 rounded shadow">
-            <FontAwesomeIcon icon={faUser} className="text-4xl text-brand-primary mb-2" />
-            <h2 className="text-2xl font-bold">Number of Members</h2>
-            <p className="text-3xl">2</p>
-          </div>
-          <div className="bg-white p-4 rounded shadow">
-            <FontAwesomeIcon icon={faUserFriends} className="text-4xl text-brand-primary mb-2" />
-            <h2 className="text-2xl font-bold">Number of Trainers</h2>
-            <p className="text-3xl">3</p>
-          </div>
-          <div className="bg-white p-4 rounded shadow">
-            <FontAwesomeIcon icon={faDumbbell} className="text-4xl text-brand-primary mb-2" />
-            <h2 className="text-2xl font-bold">Number of Equipments</h2>
-            <p className="text-3xl">3</p>
-          </div>
-          <div className="bg-white p-4 rounded shadow">
-            <FontAwesomeIcon icon={faSuitcase} className="text-4xl text-brand-primary mb-2" />
-            <h2 className="text-2xl font-bold">Number of Packages</h2>
-            <p className="text-3xl">2</p>
-          </div>
-        </div>
-        
       </main>
     </div>
   );

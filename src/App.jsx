@@ -16,6 +16,10 @@ import { CartProvider } from './context/CartContext.jsx'
 import { UserProvider } from './context/UserContext.jsx'
 // import DashboardLayout from './pages/DashboardLayout.jsx';
 import Overview from './components/Overview.jsx';
+import Trainer from './components/trainer/Trainer.jsx';
+import AddTrainer from './components/trainer/AddTrainer.jsx';
+import ViewTrainer from './components/trainer/ViewTrainer.jsx';
+import TrainerShift from './components/trainer/TrainerShift.jsx';
 
 
 function App() {
@@ -35,9 +39,15 @@ function App() {
             <Route path="/member-login" element={<MemberLogin />} />
             <Route path="/dashboard" element={<Dashboard />}>
               <Route path="overview" element={<Overview />} />
+              <Route path='trainers' element={<Trainer/>}/ >
+              <Route path='add-trainer' element={<AddTrainer/>} />
+              <Route path='view-trainer' element={<ViewTrainer/>} />
+              <Route path='trainer-shift' element={<TrainerShift/>} />
+              
             </Route>
             <Route path="/store" element={<SupplementsStore />} />
             <Route path="/cart" element={<Cart />} />
+
           </Routes>
         
         <Footer />

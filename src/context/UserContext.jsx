@@ -21,7 +21,7 @@ export const UserProvider = ({ children }) => {
         const ref = doc(db, 'users', user.uid)
         const userDoc = await getDoc(ref)
 
-        console.log(user);
+        
         console.log(userDoc.data());
         setUser(userDoc.data())
         navigate('/dashboard/overview')
@@ -31,13 +31,13 @@ export const UserProvider = ({ children }) => {
         setUser(null)
         navigate('/')
       }
+      
     })
-    
   }, []);
-  console.log(user);
+
 
   return (
-    <UserContext.Provider value={{user}}>
+    <UserContext.Provider value={{user,}}>
       {children}
     </UserContext.Provider>
   );
