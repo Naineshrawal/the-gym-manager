@@ -1,11 +1,12 @@
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import React, { useState } from 'react';
 import { auth } from '../firebase/Firebase';
+import { useNavigate } from 'react-router-dom';
 
 function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  
+  const navigate = useNavigate()
 
   const goToDashboard = async (e) => {
     e.preventDefault();
@@ -16,6 +17,7 @@ function LoginForm() {
         setPassword('')
       
       console.log(userCredentials);
+      navigate('/dashboard/overview')
     }
     catch(err){
       console.log(err);

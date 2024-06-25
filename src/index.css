@@ -12,4 +12,29 @@
       -webkit-appearance: none;
       margin: 0;
     }
+    html {
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+      scroll-behavior: smooth;
+    }
+
+    
+    ::-webkit-scrollbar {
+      /* Customize the scrollbar width */
+      border-radius: 5px;
+      width: 2px;
+      height: 2px;
   }
+  
+  ::-webkit-scrollbar-track {
+      /* Customize the scrollbar track */
+      overflow: hidden;
+      background-color: rgba(211, 211, 211, 0.792);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background-color: #073b4cc1;
+    border-radius: 5px;
+      /* Customize the scrollbar thumb */
+  }
+  }
+

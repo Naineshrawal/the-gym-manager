@@ -5,7 +5,7 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import BackButton from '../BackButton';
 
-const AddTrainer = () => {
+function AddMember() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [firstName, setFirstName] = useState('')
@@ -13,12 +13,10 @@ const AddTrainer = () => {
   const [age, setAge] = useState('')
   const [isMale, setIsMale] = useState(true)
   const [joinningDate, setJoinningDate] = useState('')
-  const [salary, setSalary] = useState('')
 
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
-
-  const addNewTrainer = async (e)=> {
+  const addNewMember = async (e)=> {
     e.preventDefault()
       const toCapitalize = (str)=>{
         return str[0].toUpperCase() + str.slice(1)
@@ -34,21 +32,11 @@ const AddTrainer = () => {
         email,
         age,
         isMale,
-        role: 'trainer',
+        role: 'member',
         joinningDate,
       });
 
-      // const docRef =await addDoc(collection(db, 'users'), {
-      //     name: fullName,
-      //     email,
-      //     age,
-      //     isMale,
-      //     role: 'trainer',
-      //     joinningDate,
-      // })
-
-      
-      navigate('/dashboard/trainers')
+      navigate('/dashboard/members')
       console.log(docRef);
       
       setEmail('')
@@ -58,14 +46,13 @@ const AddTrainer = () => {
       setAge('')
       setIsMale(false)
       setJoinningDate('')
-      setSalary('')
   }
 
   return (
     <div className=" ">
-      <BackButton link={'/dashboard/trainers'}/>
+      <BackButton link={'/dashboard/members'}/>
       <form className="space-y-6 bg-white  p-6  max-w-2xl mx-auto rounded-lg shadow-lg">
-        <h1 className="text-3xl font-bold text-center mb-10">Add Tariner</h1>
+        <h1 className="text-3xl font-bold text-center mb-10">Add Member</h1>
         <div className='flex flex-col sm:flex-row gap-4 w-full'>
           <div className='w-full'>
             <label htmlFor='first-name' className="block text-black">First Name</label>
@@ -120,10 +107,11 @@ const AddTrainer = () => {
                 </select>
             </div>
         </div>
-        <div className='flex flex-col sm:flex-row gap-4'>
-            <div className='w-full'>
+        <div className='flex  flex-col sm:flex-row gap-4'>
+            <div className=''>
                 <label className='text-gray-700' htmlFor="join-date">Joinning Date:</label>
                 <input 
+                
                 id='join-date'
                 required 
                 className="w-full p-2 border border-gray-300 outline-none rounded mt-1" 
@@ -132,7 +120,7 @@ const AddTrainer = () => {
                 onChange={(e)=>setJoinningDate(e.target.value)}
                 />
             </div>
-            <div className='w-full'>
+            {/* <div className='w-full'>
                 <label className='text-gray-700' htmlFor="salary">Salary:</label>
                 <input
                 type='number'
@@ -144,7 +132,7 @@ const AddTrainer = () => {
                 className="w-full p-2 border border-gray-300 outline-none rounded mt-1"
                 >
                 </input>
-            </div>
+            </div> */}
         </div>
         <div className="flex flex-col sm:flex-row gap-4">
         <div className='w-full'>
@@ -172,11 +160,11 @@ const AddTrainer = () => {
           />
         </div>
         </div>
-        <button type="button" onClick={addNewTrainer} className="w-full bg-brand-primary text-white p-2 rounded hover:bg-brand-accent">Add Member</button>
+        <button type="button" onClick={addNewMember} className="w-full bg-brand-primary text-white p-2 rounded hover:bg-brand-accent">Add Member</button>
       </form>
     
     </div>
-  );
-};
+  )
+}
 
-export default AddTrainer;
+export default AddMember

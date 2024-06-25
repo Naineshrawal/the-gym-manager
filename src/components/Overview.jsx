@@ -1,5 +1,5 @@
 // src/components/dashboard/Overview.jsx
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useUser } from '../context/UserContext';
 import Logout from './Logout';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,7 +7,19 @@ import { faDumbbell,  faSuitcase, faUser, faUserFriends, faCoins } from '@fortaw
 
 
 const Overview = () => {
-  const { user } = useUser();
+  const { user,
+    trainerList,
+    fetchTrainer,
+    TrainerLoading,
+    membersList,
+    fetchMembers,
+    memberLoading 
+  } = useUser();
+
+  useEffect(()=>{
+    fetchTrainer()
+    fetchMembers()
+  },[])
 
   return (
     <>
@@ -22,12 +34,20 @@ const Overview = () => {
               <div className="bg-brand-primary p-4 rounded-lg text-white">
               <FontAwesomeIcon icon={faUser} className="text-4xl text-brand-dark mb-2" />
               <h2 className="text-lg font-bold">Total Members</h2>
-              <p className="text-4xl">150</p>
+              {!memberLoading?
+                <p className="text-4xl">{membersList.length}</p>
+              :
+              <div className='w-5 mt-3 flex justify-center items-center relative h-5 border-2 border-gray-400 rounded-full'><div className='w-5 h-5 border-t-2 animate-spin rounded-full'></div></div>
+              }
               </div>
               <div className="bg-brand-secondary p-4 rounded-lg text-white">
               <FontAwesomeIcon icon={faUserFriends} className="text-4xl text-brand-primary mb-2" />
               <h2 className="text-lg font-bold">Total Trainers</h2>
-              <p className="text-4xl">25</p>
+              {!TrainerLoading ?
+              <p className="text-4xl ">{trainerList.length}</p>
+              :
+              <div className='w-5 mt-3 flex justify-center items-center relative h-5 border-2 border-gray-400 rounded-full'><div className='w-5 h-5 border-t-2 animate-spin rounded-full'></div></div>
+              }
               </div>
               
               <div className="bg-brand-neutral p-4 rounded-lg text-white">

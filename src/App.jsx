@@ -14,20 +14,25 @@ import SupplementsStore from './pages/SupplementsStore';
 import Cart from './pages/Cart';
 import { CartProvider } from './context/CartContext.jsx'
 import { UserProvider } from './context/UserContext.jsx'
-// import DashboardLayout from './pages/DashboardLayout.jsx';
 import Overview from './components/Overview.jsx';
 import Trainer from './components/trainer/Trainer.jsx';
 import AddTrainer from './components/trainer/AddTrainer.jsx';
 import ViewTrainer from './components/trainer/ViewTrainer.jsx';
 import TrainerShift from './components/trainer/TrainerShift.jsx';
+import Members from './components/member/Members.jsx';
+import ViewMembers from './components/member/ViewMembers.jsx';
+import AddMember from './components/member/AddMember.jsx';
+import Packages from './components/planpackages/Packages.jsx';
+import AddPackage from './components/planpackages/AddPackage.jsx';
 
 
-function App() {
-  return (
+function App(){
+  return(
+    <>
     <Router>
-    <CartProvider>
-    <UserProvider>
       <div className="flex flex-col min-h-screen">
+        <CartProvider>
+        <UserProvider>
         <Header />        
             
           <Routes>
@@ -43,7 +48,13 @@ function App() {
               <Route path='add-trainer' element={<AddTrainer/>} />
               <Route path='view-trainer' element={<ViewTrainer/>} />
               <Route path='trainer-shift' element={<TrainerShift/>} />
+
+              <Route path='members' element={<Members/>} />
+              <Route path='view-members' element={<ViewMembers/>} />
+              <Route path='add-member' element={<AddMember/>} />
               
+              <Route path='packages' element={<Packages/>} />
+              <Route path='add-package' element={<AddPackage/>} />
             </Route>
             <Route path="/store" element={<SupplementsStore />} />
             <Route path="/cart" element={<Cart />} />
@@ -51,11 +62,12 @@ function App() {
           </Routes>
         
         <Footer />
+        </UserProvider>
+        </CartProvider>
       </div>
-    </UserProvider>
-    </CartProvider>
     </Router>
- );
-}
+    </>
+  );
+};
 
 export default App;

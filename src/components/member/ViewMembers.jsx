@@ -4,21 +4,19 @@ import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import BackButton from '../BackButton';
 import { useUser } from '../../context/UserContext';
 
-const ViewTrainer =  () => {
-  const {TrainerLoading,fetchTrainer,trainerList} = useUser()
-
+function ViewMembers() {
+    const {memberLoading,fetchMembers,membersList} = useUser()
 
     useEffect(()=>{
       
 
-      fetchTrainer()
-    },[])
-  // console.log(trainerList);
+        fetchMembers()
+      },[])
   return (
     <>
       <div className=' mx-auto px-4 max-w-[1000px] mb-5' >
-        <BackButton link={'/dashboard/trainers'}/>
-          <h1 className='text-center font-bold text-brand-neutral text-2xl mb-5'>Trainer List</h1>
+        <BackButton link={'/dashboard/members'}/>
+          <h1 className='text-center font-bold text-brand-neutral text-2xl mb-5'>Members List</h1>
         <div className="overflow-x-auto shadow-md sm:rounded-xl">
             {/* table  */}
             <table className="w-full border-2  border-white shadow-md text-sm text-left text-gray-500 dark:text-gray-400" >
@@ -43,9 +41,6 @@ const ViewTrainer =  () => {
                           {"Age"}
                         </th>
                         <th  scope="col" className="px-6 py-3 text-[white]">
-                          {"Salary"}
-                        </th>
-                        <th  scope="col" className="px-6 py-3 text-[white]">
                           {"Joined"}
                         </th>
                         <th  scope="col" className="px-6 py-3 text-[white]">
@@ -57,9 +52,9 @@ const ViewTrainer =  () => {
                     </tr>
                 </thead>
                 {/* tbody  */}
-                {!TrainerLoading ?
+                {!memberLoading ?
                 <>
-                  {trainerList.map((doc, index)=>(
+                  {membersList.map((doc, index)=>(
                       <tbody key={index}>
                               <tr className=" border-b-2">
                                   {/* S.No   */}
@@ -81,25 +76,17 @@ const ViewTrainer =  () => {
                                   <td  className="px-6 py-4">
                                       {doc?.age}
                                   </td>
-                                  {/* salary */}
-                                  <td  className="px-6 py-4">
-                                      {doc?.salary}
-                                  </td>
                                   {/* Joinning Date */}
                                   <td  className="px-6 py-4">
                                       {"21/02/2024"}
                                   </td>
                                   {/* edit  */}
                                   <td  className="px-6 py-4">
-                                  <FontAwesomeIcon className='text-brand-primary font-bold cursor-pointer text-xl' icon={faEdit} />
-                                      {/* <button className=' px-4 py-1 rounded-lg text-[white] font-bold bg-red-500'>
-                                        Edit
-                                      </button> */}
+                                    <FontAwesomeIcon className='text-brand-primary font-bold cursor-pointer text-xl' icon={faEdit} />
                                   </td>
                                   {/* delete */}
                                   <td  className="px-6 py-4">
-                                      
-                                  <FontAwesomeIcon className='text-brand-primary font-bold cursor-pointer text-xl' icon={faTrash} />
+                                    <FontAwesomeIcon className='text-brand-primary font-bold cursor-pointer text-xl' icon={faTrash} />
                                   </td>
                               </tr>
                       </tbody>
@@ -115,7 +102,7 @@ const ViewTrainer =  () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default ViewTrainer;
+export default ViewMembers
