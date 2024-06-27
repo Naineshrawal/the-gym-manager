@@ -13,16 +13,20 @@ const Overview = () => {
     TrainerLoading,
     membersList,
     fetchMembers,
-    memberLoading 
+    memberLoading,
+    fetchEquipments,
+    equipmentLoading,
+    equipmentList, 
   } = useUser();
 
   useEffect(()=>{
     fetchTrainer()
     fetchMembers()
+    fetchEquipments()
   },[])
 
   return (
-    <>
+    <div className='section-container'>
         <div className="bg-white flex justify-between p-6 rounded-lg shadow-lg mb-2">
             <h1 className="text-3xl font-bold">Hello, {user.name} <span className='text-sm text-gray-400'>({user.role})</span></h1>
             <Logout/>
@@ -32,39 +36,43 @@ const Overview = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           
               <div className="bg-brand-primary p-4 rounded-lg text-white">
-              <FontAwesomeIcon icon={faUser} className="text-4xl text-brand-dark mb-2" />
-              <h2 className="text-lg font-bold">Total Members</h2>
-              {!memberLoading?
-                <p className="text-4xl">{membersList.length}</p>
-              :
-              <div className='w-5 mt-3 flex justify-center items-center relative h-5 border-2 border-gray-400 rounded-full'><div className='w-5 h-5 border-t-2 animate-spin rounded-full'></div></div>
-              }
+                <FontAwesomeIcon icon={faUser} className="text-4xl text-brand-dark mb-2" />
+                <h2 className="text-lg font-bold">Total Members</h2>
+                {!memberLoading?
+                  <p className="text-4xl">{membersList.length}</p>
+                :
+                <div className='w-5 mt-3 flex justify-center items-center relative h-5 border-2 border-gray-400 rounded-full'><div className='w-5 h-5 border-t-2 animate-spin rounded-full'></div></div>
+                }
               </div>
               <div className="bg-brand-secondary p-4 rounded-lg text-white">
-              <FontAwesomeIcon icon={faUserFriends} className="text-4xl text-brand-primary mb-2" />
-              <h2 className="text-lg font-bold">Total Trainers</h2>
-              {!TrainerLoading ?
-              <p className="text-4xl ">{trainerList.length}</p>
-              :
-              <div className='w-5 mt-3 flex justify-center items-center relative h-5 border-2 border-gray-400 rounded-full'><div className='w-5 h-5 border-t-2 animate-spin rounded-full'></div></div>
-              }
+                <FontAwesomeIcon icon={faUserFriends} className="text-4xl text-brand-primary mb-2" />
+                <h2 className="text-lg font-bold">Total Trainers</h2>
+                {!TrainerLoading ?
+                <p className="text-4xl ">{trainerList.length}</p>
+                :
+                <div className='w-5 mt-3 flex justify-center items-center relative h-5 border-2 border-gray-400 rounded-full'><div className='w-5 h-5 border-t-2 animate-spin rounded-full'></div></div>
+                }
               </div>
               
               <div className="bg-brand-neutral p-4 rounded-lg text-white">
-              <FontAwesomeIcon icon={faDumbbell} className="text-4xl text-brand-secondary mb-2" />
-              <h2 className="text-lg font-bold">Total Equipments</h2>
-              <p className="text-4xl">26</p>
+                <FontAwesomeIcon icon={faDumbbell} className="text-4xl text-brand-secondary mb-2" />
+                <h2 className="text-lg font-bold">Total Equipments</h2>
+                {!equipmentLoading ?
+                <p className="text-4xl ">{equipmentList.length}</p>
+                :
+                <div className='w-5 mt-3 flex justify-center items-center relative h-5 border-2 border-gray-400 rounded-full'><div className='w-5 h-5 border-t-2 animate-spin rounded-full'></div></div>
+                }
               </div>
               <div className="bg-brand-accent p-4 rounded-lg text-white">
               <FontAwesomeIcon icon={faCoins} className="text-4xl text-brand-primary mb-2" />
               <h2 className="text-lg font-bold">Monthly Revenue</h2>
               <p className="text-4xl">₹12,000</p>
               </div>
-              <div className="bg-brand-dark p-4 rounded-lg text-white">
+              {/* <div className="bg-brand-dark p-4 rounded-lg text-white">
               <FontAwesomeIcon icon={faSuitcase} className="text-4xl text-brand-primary mb-2" />
               <h2 className="text-lg font-bold">Active Subscriptions</h2>
               <p className="text-4xl">135</p>
-              </div>
+              </div> */}
           </div>
         </div>
         <div className="bg-white  grid grid-cols-1 md:grid-cols-2 gap-6 p-6 rounded-lg shadow-lg mb-2">
@@ -84,7 +92,7 @@ const Overview = () => {
               </div>
             </div>
         </div>
-    </>
+    </div>
   );
 };
 

@@ -14,10 +14,10 @@ function ViewMembers() {
       },[])
   return (
     <>
-      <div className=' mx-auto px-4 max-w-[1000px] mb-5' >
+      <div className='section-container mb-5' >
         <BackButton link={'/dashboard/members'}/>
           <h1 className='text-center font-bold text-brand-neutral text-2xl mb-5'>Members List</h1>
-        <div className="overflow-x-auto shadow-md sm:rounded-xl">
+        <div className="overflow-x-auto shadow-md rounded-xl">
             {/* table  */}
             <table className="w-full border-2  border-white shadow-md text-sm text-left text-gray-500 dark:text-gray-400" >
                 {/* thead  */}
@@ -55,30 +55,31 @@ function ViewMembers() {
                 {!memberLoading ?
                 <>
                   {membersList.map((doc, index)=>(
-                      <tbody key={index}>
+                    
+                      <tbody key={doc.id}>
                               <tr className=" border-b-2">
                                   {/* S.No   */}
                                   <td  className="px-6 py-4">
                                       {index + 1}.
                                   </td>
                                   {/* Name */}
-                                  <th  scope="row" className="px-6 py-4 font-medium ">
-                                      {doc?.name} 
-                                  </th>
+                                  <td  scope="row" className="px-6 py-4 font-medium ">
+                                      {doc.data()?.name} 
+                                  </td>
                                   {/* profile Img */}
                                   <td  className="px-6 py-4">
                                       {"image"}
                                   </td>
                                   {/* Number*/}
                                   <td  className="px-6 py-4">
-                                      {"8460068103"}
+                                      {doc.data()?.mobile}
                                   </td>
                                   <td  className="px-6 py-4">
-                                      {doc?.age}
+                                      {doc.data()?.age}
                                   </td>
                                   {/* Joinning Date */}
                                   <td  className="px-6 py-4">
-                                      {"21/02/2024"}
+                                      {doc.data()?.joinningDate}
                                   </td>
                                   {/* edit  */}
                                   <td  className="px-6 py-4">

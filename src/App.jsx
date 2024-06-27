@@ -24,6 +24,9 @@ import ViewMembers from './components/member/ViewMembers.jsx';
 import AddMember from './components/member/AddMember.jsx';
 import Packages from './components/planpackages/Packages.jsx';
 import AddPackage from './components/planpackages/AddPackage.jsx';
+import AddEquipment from './components/equipments/AddEquipment.jsx';
+import Equipments from './components/equipments/Equipments.jsx';
+import Attendance from './components/attendance/Attendance.jsx';
 
 
 function App(){
@@ -44,7 +47,7 @@ function App(){
             <Route path="/member-login" element={<MemberLogin />} />
             <Route path="/dashboard" element={<Dashboard />}>
               <Route path="overview" element={<Overview />} />
-              <Route path='trainers' element={<Trainer/>}/ >
+              <Route path='trainers' element={<Trainer/>} />
               <Route path='add-trainer' element={<AddTrainer/>} />
               <Route path='view-trainer' element={<ViewTrainer/>} />
               <Route path='trainer-shift' element={<TrainerShift/>} />
@@ -54,7 +57,12 @@ function App(){
               <Route path='add-member' element={<AddMember/>} />
               
               <Route path='packages' element={<Packages/>} />
-              <Route path='add-package' element={<AddPackage/>} />
+              {/* <Route path='add-package' element={<AddPackage/>} /> */}
+
+              {/* <Route path='add-equipment' element={<AddEquipment/>} /> */}
+              <Route path='equipments' element={<Equipments/>} />
+
+              <Route path='attendance' element={<Attendance/>} />
             </Route>
             <Route path="/store" element={<SupplementsStore />} />
             <Route path="/cart" element={<Cart />} />

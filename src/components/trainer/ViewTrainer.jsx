@@ -16,7 +16,7 @@ const ViewTrainer =  () => {
   // console.log(trainerList);
   return (
     <>
-      <div className=' mx-auto px-4 max-w-[1000px] mb-5' >
+      <div className=' section-container   mb-5' >
         <BackButton link={'/dashboard/trainers'}/>
           <h1 className='text-center font-bold text-brand-neutral text-2xl mb-5'>Trainer List</h1>
         <div className="overflow-x-auto shadow-md sm:rounded-xl">
@@ -67,9 +67,9 @@ const ViewTrainer =  () => {
                                       {index + 1}.
                                   </td>
                                   {/* Name */}
-                                  <th  scope="row" className="px-6 py-4 font-medium ">
+                                  <td  scope="row" className="px-6 py-4 font-medium ">
                                       {doc?.name} 
-                                  </th>
+                                  </td>
                                   {/* profile Img */}
                                   <td  className="px-6 py-4">
                                       {"image"}

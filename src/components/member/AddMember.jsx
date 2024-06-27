@@ -49,7 +49,7 @@ function AddMember() {
   }
 
   return (
-    <div className=" ">
+    <div className=" section-container">
       <BackButton link={'/dashboard/members'}/>
       <form className="space-y-6 bg-white  p-6  max-w-2xl mx-auto rounded-lg shadow-lg">
         <h1 className="text-3xl font-bold text-center mb-10">Add Member</h1>

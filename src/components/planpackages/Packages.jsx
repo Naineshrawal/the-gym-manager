@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useUser } from '../../context/UserContext'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
-import {  doc } from 'firebase/firestore'
+import {  deleteDoc, doc } from 'firebase/firestore'
 import { db } from '../../firebase/Firebase'
 import AddPackage from './AddPackage'
 
@@ -14,25 +14,24 @@ function Packages() {
     const {packageList, packageLoading, fetchPackages} = useUser()
     
     
-    const deleteDoc = async (dltdoc)=>{
-        console.log(dltdoc.id);
-        await deleteDoc(doc(db, 'packages', dltdoc.id))
-        // try{
-        //     console.log('deleting');
+    const deletePackage = async (dltdoc)=>{
+        try{
+            await deleteDoc(doc(db, 'packages', dltdoc.id))
+                       
             
-            
-        // }catch(err){
-        //     console.log(err);
-        //     console.log('err');
-        // }
+            fetchPackages()
+        }catch(err){
+            console.log(err);
+            console.log('err');
+        }
     }
     useEffect(()=>{
         fetchPackages()
-    },[editing, adding])
+    },[editing, adding, setAdding ])
 
 
   return (
-    <div className=' mx-auto  px-4 max-w-[1000px] mb-5' >
+    <div className='section-container mb-5 ' >
         
         {!adding  ? 
         <div className='flex flex-col mt-5'>
@@ -46,7 +45,7 @@ function Packages() {
                             
                             className="text-xs bg-brand-dark">
                             <tr>
-                                <th  scope="col" className="px-6 py-3 text-[white]">
+                                <th  scope="col" className="px-2 py-3 text-[white]">
                                 {"S.No"}
                                 </th>
                                 <th  scope="col" className="px-6 py-3 text-[white]">
@@ -76,13 +75,13 @@ function Packages() {
                             <tbody key={index}>
                                     <tr className=" border-b-2">
                                         {/* S.No   */}
-                                        <td  className="px-6 py-4">
+                                        <td  className="px-4 py-4">
                                             {index + 1}.
                                         </td>
                                         {/* Package Name */}
-                                        <th  scope="row" className="px-6 py-4 font-medium ">
+                                        <td  scope="row" className="px-6 py-4 font-medium ">
                                             {doc?.data().name} 
-                                        </th>
+                                        </td>
                                         {/* Description*/}
                                         <td  className="px-6 py-4">
                                             {doc?.data().description}
@@ -93,7 +92,7 @@ function Packages() {
                                         </td>
                                         {/* duration */}
                                         <td  className="px-6 py-4">
-                                            {doc?.data().duaration}
+                                            {doc?.data().duration}
                                             
                                         </td>
                                         {/* edit  */}
@@ -111,7 +110,7 @@ function Packages() {
                                         {/* delete */}
                                         <td  className="px-6 py-4">
                                             <FontAwesomeIcon  
-                                            onClick={()=>{deleteDoc(doc)}} 
+                                            onClick={()=>{deletePackage(doc)}} 
                                             className='text-brand-primary font-bold cursor-pointer text-xl' 
                                             icon={faTrash} />
                                         </td>
@@ -141,6 +140,7 @@ function Packages() {
         editData={editData}
         setEditData={setEditData}
         editId={editId}
+        setEditId={setEditId}
          />
         }
         

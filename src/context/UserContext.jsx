@@ -11,12 +11,19 @@ const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+
   const [trainerList, setTrainerList]= useState([])
   const [TrainerLoading, setTrainerLoading]= useState(false)
+
   const [membersList, setMembersList]= useState([])
   const [memberLoading, setMemberLoading]= useState(false)
+
   const [packageList, setPackageList]= useState([])
   const [packageLoading, setPackageLoading]= useState(false)
+
+  const [equipmentList, setEquipmentList]= useState([])
+  const [equipmentLoading, setEquipmentLoading]= useState(false)
+
   const navigate = useNavigate();
   let uniqueId = Date.now()
 
@@ -28,7 +35,7 @@ export const UserProvider = ({ children }) => {
       const querySnapShot  = await getDocs(q)
       let docArr = []
       querySnapShot.forEach((doc)=>{
-          docArr.push(doc.data())
+          docArr.push(doc)
       })
       setMembersList(docArr)
       setMemberLoading(false)
@@ -82,6 +89,39 @@ export const UserProvider = ({ children }) => {
       }
       
   }
+  const addingEquipment = async ({equipment,price,weight,quantity,editId,installedDate})=>{
+    if(editId){ 
+      uniqueId = editId;
+
+    }
+    
+    try{
+      await setDoc(doc(db, 'equipments',`${uniqueId}`), {
+        equipment,
+        price,
+        weight,
+        quantity,
+        installedDate,
+      });
+      uniqueId = Date.now()
+    }catch(err){
+      console.log(err);
+    }
+  }
+  const fetchEquipments = async ()=>{
+    setEquipmentLoading(true)
+      try{
+        const querySnapShot = await getDocs(collection(db, 'equipments'))
+        let equipmentArr = [];
+        querySnapShot.forEach((doc)=>equipmentArr.push(doc))
+        setEquipmentList(equipmentArr)
+        setEquipmentLoading(false)
+      }catch(err){
+        console.log(err);
+        setEquipmentLoading(false)
+      }
+      
+  }
   useEffect(() => {
     onAuthStateChanged(auth, async user => {
       if(user){
@@ -106,16 +146,10 @@ export const UserProvider = ({ children }) => {
   return (
     <UserContext.Provider value={{
       user,
-      TrainerLoading,
-      fetchTrainer,
-      trainerList,
-      memberLoading,
-      fetchMembers,
-      membersList,
-      packageLoading,
-      addingPackage,
-      fetchPackages,
-      packageList,
+      TrainerLoading, fetchTrainer, trainerList,
+      memberLoading, fetchMembers, membersList,
+      packageLoading, addingPackage, fetchPackages, packageList,
+      equipmentList,addingEquipment, equipmentLoading, fetchEquipments,
       }}>
       {children}
     </UserContext.Provider>

@@ -12,6 +12,17 @@
       -webkit-appearance: none;
       margin: 0;
     }
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      margin-top: 7px;
+      color: rgba(0, 0, 0, 0);
+      opacity: 1;
+      display: block;
+      background: url(https://mywildalberta.ca/images/GFX-MWA-Parks-Reservations.png) no-repeat;
+      width: 20px;
+      height: 20px;
+      /* border-width: thin; */
+      cursor: pointer;
+  }
     html {
       font-family: "IBM Plex Sans", system-ui, sans-serif;
       scroll-behavior: smooth;
