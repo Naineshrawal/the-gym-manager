@@ -18,8 +18,9 @@ const ViewTrainer =  () => {
     <>
       <div className=' section-container   mb-5' >
         <BackButton link={'/dashboard/trainers'}/>
-          <h1 className='text-center font-bold text-brand-neutral text-2xl mb-5'>Trainer List</h1>
-        <div className="overflow-x-auto shadow-md sm:rounded-xl">
+        <div className='shadow-lg rounded-xl overflow-hidden bg-white'>
+        <h1 className='text-center font-bold text-brand-neutral text-2xl my-5'>Trainer List</h1>
+        <div className="overflow-x-auto  rounded-t-xl">
             {/* table  */}
             <table className="w-full border-2  border-white shadow-md text-sm text-left text-gray-500 dark:text-gray-400" >
                 {/* thead  */}
@@ -112,6 +113,7 @@ const ViewTrainer =  () => {
                 }
                 
             </table>
+        </div>
         </div>
       </div>
     </>

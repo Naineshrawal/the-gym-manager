@@ -13,7 +13,7 @@
       margin: 0;
     }
     input[type="date"]::-webkit-calendar-picker-indicator {
-      margin-top: 7px;
+      /* margin-top: 7px; */
       color: rgba(0, 0, 0, 0);
       opacity: 1;
       display: block;

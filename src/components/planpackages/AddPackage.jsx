@@ -61,20 +61,24 @@ function AddPackage({
         setDescription('')
         setAmount('')
         setDuration('')
-        navigate('/dashboard/packages')
         setEditing(false)
         setAdding(false)
         setEditData(null)
         setEditId('')
+        navigate('/dashboard/packages')
     }
     return (
         <div className='bg-white relative p-6 rounded-lg shadow-lg max-w-lg mx-auto mt-6'>
           <FontAwesomeIcon className=' text-brand-primary absolute cursor-pointer right-3 top-3' icon={faX} 
           onClick={()=>(
+              setPackageName(''),
+              setDescription(''),
+              setAmount(''),
+              setDuration(''),
               setEditData(null),
               setAdding(false),
               setEditing(false),
-              setEditId(false)
+              setEditId('')
           )} />
           <h1 className='text-center font-bold text-brand-neutral text-2xl my-5'>Add Package</h1>
           <form >

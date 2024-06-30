@@ -27,6 +27,9 @@ import AddPackage from './components/planpackages/AddPackage.jsx';
 import AddEquipment from './components/equipments/AddEquipment.jsx';
 import Equipments from './components/equipments/Equipments.jsx';
 import Attendance from './components/attendance/Attendance.jsx';
+import Reports from './components/reports/Reports.jsx';
+import ExpensesReport from './components/reports/ExpensesReport.jsx';
+import SubscriptionsReport from './components/reports/SubscriptionsReport.jsx';
 
 
 function App(){
@@ -57,12 +60,14 @@ function App(){
               <Route path='add-member' element={<AddMember/>} />
               
               <Route path='packages' element={<Packages/>} />
-              {/* <Route path='add-package' element={<AddPackage/>} /> */}
-
-              {/* <Route path='add-equipment' element={<AddEquipment/>} /> */}
+              
               <Route path='equipments' element={<Equipments/>} />
 
               <Route path='attendance' element={<Attendance/>} />
+
+              <Route path='reports' element={<Reports/>} />
+              <Route path='expenses-report' element={<ExpensesReport/>} />
+              <Route path='subscriptions-report' element={<SubscriptionsReport/>} />
             </Route>
             <Route path="/store" element={<SupplementsStore />} />
             <Route path="/cart" element={<Cart />} />

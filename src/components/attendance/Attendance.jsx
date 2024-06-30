@@ -13,6 +13,7 @@ import ViewAttendance from './ViewAttendance';
 const Attendance = () => {
   const { fetchMembers,membersList, memberLoading } = useUser();
   const [attendance, setAttendance] = useState([]);
+  const [memberName, setMemberName] = useState('');
   const [date, setDate] = useState('');
   const [view, setView] = useState(false);
   const [showError, setShowError] = useState('hidden');
@@ -99,7 +100,7 @@ const Attendance = () => {
                                 <td colSpan={4} align='center' className='px-6 py-2 relative'>
                                     
                                     <form className=''>
-                                        <label className=" text-brand-dark font-semibold mr-2">Select Date  </label>
+                                        <label className=" text-brand-dark font-semibold mr-2">Select Date &nbsp;&#10148;</label>
                                         <input
                                                 type="date"
                                                 value={date}
@@ -119,7 +120,7 @@ const Attendance = () => {
                                     </td>
                                     {/* Name */}
                                     <td  scope="row" className="px-6 py-4 font-medium ">
-                                        {member.data()?.name} 
+                                        {member.data()?.firstName +' ' + member.data()?.lastName} 
                                     </td>
                                     {/* take attendance */}
                                     <td  scope="row" className="px-6 py-4 font-medium text-center space-x-2">
@@ -151,7 +152,8 @@ const Attendance = () => {
                                         <div onClick={()=>(
                                             fetchAttendanceRecords(member.id),
                                             setView(true),
-                                            setAttendance([])
+                                            setAttendance([]),
+                                            setMemberName(member.data()?.name)
                                             )} className="inline-flex items-center bg-brand-primary py-1 px-2 rounded-3xl text-white cursor-pointer">
                                             {/* <FontAwesomeIcon className='cursor-pointer bg-brand-primary  rounded-full text-white w-4 h-4 p-1  ' icon={faPlus} /> */}
                                             <span>View Attendace</span>
@@ -178,6 +180,8 @@ const Attendance = () => {
         attendance={attendance} 
         setAttendance={setAttendance} 
         setView={setView} 
+        setMemberName={setMemberName}
+        memberName={memberName}
     />
   }
   </>

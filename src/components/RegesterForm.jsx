@@ -117,17 +117,7 @@ const RegisterForm = () => {
             <h2 className='text-brand-dark font-medium'>you will be regestered as admin</h2>
             
             
-          {/* <label htmlFor="role" className="block text-gray-700">Role:</label>
-          <select
-            id="role"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded mt-1"
-          >
-            <option value="member">Member</option>
-            <option value="trainer">Trainer</option>
-            <option value="admin">Admin</option>
-          </select> */}
+        
         </div>
         <button type="submit" className="w-full bg-brand-primary text-white p-2 rounded">Register</button>
       </form>

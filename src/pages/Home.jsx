@@ -6,9 +6,9 @@ import { Link } from 'react-router-dom';
 
 function Home() {
   const {user} = useUser()
-  console.log(user);
+  
   return (
-    <main className="section-container  w-full bg-black flex items-center justify-center md:justify-start bg-no-repeat  bg-center bg-cover bg-hero h-[100vh]" >
+    <main className="section-container  w-full bg-black flex items-center justify-center md:justify-start bg-no-repeat  bg-center bg-cover bg-hero min-h-[100vh]" >
         {!user ? <div className="bg-white/50 p-8 rounded shadow-md w-full max-w-xs  md:ml-20">
           <h2 className="text-2xl font-bold mb-6 text-center ">ADMIN LOGIN</h2>
           

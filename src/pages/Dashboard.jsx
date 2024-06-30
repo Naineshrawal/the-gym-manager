@@ -6,8 +6,8 @@ import { useUser } from '../context/UserContext';
 import { Link, Outlet } from 'react-router-dom';
 
 const Dashboard = () => {
-  const [asideWidth, setAsideWidth] = useState(10)
-  const [hidden, setHidden] = useState("hidden")
+  const [asideWidth, setAsideWidth] = useState('w-12')
+  const [hidden, setHidden] = useState("invisible")
   const [rotate, setRotate] = useState('scale-x-100')
 
   const {user} = useUser()
@@ -18,36 +18,36 @@ const Dashboard = () => {
   }
 
   const toggleWidth = ()=>{
-    if(asideWidth === 64){
+    if(asideWidth === 'w-64'){
       setRotate('scale-x-100')
-      setHidden('hidden')
-      setAsideWidth(10)
+      setHidden('invisible')
+      setAsideWidth('w-12')
     }else{
       setRotate('-scale-x-100')
-      setHidden('inline-block')
-      setAsideWidth(64)
+      setHidden('visible')
+      setAsideWidth('w-64')
     }
   }
   
   
   return (
     <div className="flex  bg-gray-100">
-      <aside className={`w-${asideWidth}   top-0  bg-[#12313b] text-white flex flex-col`}>
+      <aside className={`${asideWidth} duration-500  top-0  bg-[#12313b] text-white flex flex-col`}>
         <nav className="flex-grow relative">
           {/* close aside icon */}
           <div onClick={toggleWidth} className={`absolute  -right-5 py-4 rounded-r-full pr-3    cursor-pointer top-[50vh] -translate-y-[50%] bg-[#12313b]`}>
             <FontAwesomeIcon  className={`${rotate} duration-700`} icon={faChevronRight} />
           </div>
           
-          <div className={`p-4 overflow-hidden ${hidden} text-xl font-bold`}>Gym Management System</div>
-          <ul className='overflow-hidden'>
+          <ul className='overflow-hidden  text-nowrap '>
+          <h1 className={`${hidden} text-center before:block before:absolute relative before:-bottom-1 before:w-36 before:left-[50%] before:rounded-3xl before:-translate-x-[50%] before:h-[1px] before:bg-brand-primary mt-5 text-brand-secondary font-bold text-xl`}>Dashboard</h1>
             {user?.role == 'admin' &&
             (<>
               
             <Link to="overview" >
-            <li className="px-3 py-4 hover:bg-brand-primary">
+            <li className="px-3 py-4 hover:bg-brand-primary ">
               <FontAwesomeIcon icon={faHome} className="mr-2" />
-              <span className={`${hidden}`}>Overview</span>
+              <span className={`${hidden} `}>Overview</span>
             </li>
             </Link>
             <Link to="trainers" >
@@ -75,7 +75,7 @@ const Dashboard = () => {
             </li>
             </Link>
             <Link to="equipments">
-            <li className="px-3 py-4 hover:bg-brand-primary">
+            <li className="px-3 py-4 hover:bg-brand-primary ">
               <FontAwesomeIcon icon={faDumbbell} className="mr-2" />
               <span className={`${hidden}`}>Equipments</span>
             </li>
