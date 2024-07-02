@@ -1,4 +1,4 @@
-import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
+import { Timestamp, addDoc, collection, doc, setDoc } from 'firebase/firestore';
 import React, { useCallback, useEffect, useState } from 'react';
 import { auth, db } from '../../firebase/Firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
@@ -7,6 +7,7 @@ import BackButton from '../BackButton';
 import { useUser } from '../../context/UserContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faX } from '@fortawesome/free-solid-svg-icons';
+import { toast } from 'react-toastify';
 
 function AddMember({
   editData,
@@ -24,10 +25,12 @@ function AddMember({
   const [age, setAge] = useState('')
   const [gender, setGender] = useState('Male')
   const [joiningDate, setJoiningDate] = useState('')
+  
   const [packagePlan, setPackagePlan] = useState('')
   const [amount, setAmount] = useState('')
   const packageDuration = []
   const navigate = useNavigate()
+  let lastPaymentDate ;
   let uniqueId;
   const {packageList, fetchPackages, fetchMembers} = useUser()
 
@@ -46,38 +49,60 @@ function AddMember({
         setJoiningDate(editData.joiningDate)
         setNumber(editData.number)
         setPackagePlan(editData.packagePlan)
-        setAmount(editData.amount)      
+        setAmount(editData.amount) 
+       
+        
+         
   }
        
   },[])
 
   
-  const formatDate = (date)=>{setJoiningDate(
-    new Date(date).toLocaleDateString('en-IN',{
-      day:'2-digit',
-      month:'2-digit',
-      year:'numeric'
-    }).replaceAll('/','-')
-  )
   
-  } 
   const addNewMember = async (e)=> {
     e.preventDefault()
     
     const filteredDuration = packageDuration.filter((doc)=>{return doc.plan == packagePlan})
     if(!editMode) {
-
+     
+      lastPaymentDate = joiningDate
+      console.log(lastPaymentDate);
     const createUser = await createUserWithEmailAndPassword(auth, email, password)
-    
     uniqueId = createUser.user.uid
+   
+    
+    
+  }else{
+
+    uniqueId = editId   
   }
 
-    if(editId) uniqueId = editId
+  let subscriptionStatus = 'active'
+  if(editMode) {subscriptionStatus = editData.subscription
+    lastPaymentDate = editData.lastPaymentDate}
+  
     try {
       
+       // craeating Invoice
+    try{
+      const docRef = doc(db, `users/${uniqueId}/invoices`, lastPaymentDate)
+        await setDoc(docRef, {
+            name:firstName +' '+ lastName,
+            number,
+            packagePlan,
+            amount,
+
+          })
+            // adding revenue
+        await setDoc(doc(db, 'revenue', lastPaymentDate),{
+              date:lastPaymentDate,
+              amount,
+        })
+    }catch(err){
+      console.log(err);
+    }
       
       
-  
       await setDoc(doc(db, 'users', uniqueId), {
             firstName,
             lastName,
@@ -86,26 +111,20 @@ function AddMember({
             age,
             gender,
             role: 'member',
-            subscription:'active',
-            lastPaymentDate:joiningDate,
+            subscription:subscriptionStatus,
+            lastPaymentDate,
             packagePlan,
             joiningDate,
             amount,
             duration:filteredDuration[0].duration
           });
           
-          // craeating Invoice
-              // try{const docRef = doc(db, `users/${String(createUser.user.uid)}/invoices`, joiningDate)
-              // await setDoc(docRef, {
-              //     name:firstName +' '+ lastName,
-              //     number,
-              //     amount,
-              //     packagePlan,
-    
-              // })}catch(err){
-              //   console.log(err);
-              // }
           
+          if(editMode){
+            toast.success("Member Edit Success")
+          }else{
+            toast.success("Member Added Successfully")
+          }
       } catch (error) {
         console.log(error);
       }
@@ -132,7 +151,7 @@ function AddMember({
     }
 
   return (
-    <div className=" section-container">
+    <div className=" section-container m-6">
       {!editMode && <BackButton link={'/dashboard/members'}/>}
       <form className="relative space-y-6 bg-white  p-6  max-w-2xl mx-auto rounded-lg shadow-lg">
       {editMode && <FontAwesomeIcon className=' text-brand-primary absolute cursor-pointer right-3 top-3' icon={faX} 
@@ -153,7 +172,7 @@ function AddMember({
         setEditId('')
       )}
       />}
-        <h1 className="text-3xl font-bold text-center mb-10">Add Member</h1>
+        <h1 className="text-3xl font-bold text-center mb-10">{editMode? 'Edit' :'Add'} Member</h1>
         <div className='flex flex-col sm:flex-row gap-4 w-full'>
           <div className='w-full'>
             <label htmlFor='first-name' className="block text-black">First Name</label>
@@ -259,8 +278,8 @@ function AddMember({
                 required 
                 className="w-full p-2 border border-gray-300 outline-none rounded mt-1" 
                 type="date" 
-                // value={joiningDate}
-                onChange={(e)=>formatDate(e.target.value)}
+                value={joiningDate}
+                onChange={(e)=>setJoiningDate(e.target.value)}
                 />
             </div>
            

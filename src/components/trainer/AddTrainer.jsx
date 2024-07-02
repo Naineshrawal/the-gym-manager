@@ -1,71 +1,146 @@
 import { doc, setDoc } from 'firebase/firestore';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { auth, db } from '../../firebase/Firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import BackButton from '../BackButton';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faX } from '@fortawesome/free-solid-svg-icons';
+import { useUser } from '../../context/UserContext';
+import { toast } from 'react-toastify';
 
-const AddTrainer = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [age, setAge] = useState('')
-  const [isMale, setIsMale] = useState(true)
-  const [joinningDate, setJoinningDate] = useState('')
-  const [salary, setSalary] = useState('')
+const AddTrainer = ({
+        editData,
+        setEditData,
+        editMode,
+        setEditMode,
+        editId,
+        setEditId,
+        }) => {
+        const [email, setEmail] = useState('')
+        const [password, setPassword] = useState('')
+        const [firstName, setFirstName] = useState('')
+        const [lastName, setLastName] = useState('')
+        const [age, setAge] = useState('')
+        const [gender, setGender] = useState('male')
+        const [joiningDate, setJoiningDate] = useState('')
+        const [salary, setSalary] = useState('')
+        const [number, setNumber] = useState('')
 
-  const navigate = useNavigate();
+        const {fetchTrainer} = useUser()
 
+        let uniqueId ;
 
-  const addNewTrainer = async (e)=> {
-    e.preventDefault()
-      const toCapitalize = (str)=>{
-        return str[0].toUpperCase() + str.slice(1)
-      }
-      const fullName = toCapitalize(firstName) + ' ' + toCapitalize(lastName)
+        const navigate = useNavigate();
 
-      
+        // const formatDate = (date)=>{setJoiningDate(
+        //   new Date(date).toLocaleDateString('en-IN',{
+        //     day:'2-digit',
+        //     month:'2-digit',
+        //     year:'numeric'
+        //   }).replaceAll('/','-')
+        // )
+        
+        // } 
 
-      const createUser = await createUserWithEmailAndPassword(auth, email, password)
-      
-      const docRef = await setDoc(doc(db, 'users', createUser.user.uid), {
-        name: fullName,
-        email,
-        age,
-        isMale,
-        role: 'trainer',
-        joinningDate,
-      });
+        // edit trainer
+        
+        useEffect(()=>{
 
-      // const docRef =await addDoc(collection(db, 'users'), {
-      //     name: fullName,
-      //     email,
-      //     age,
-      //     isMale,
-      //     role: 'trainer',
-      //     joinningDate,
-      // })
+          if(editData){
+            setFirstName(editData.firstName)
+            setLastName(editData.lastName)
+            setAge(editData.age)
+            setGender(editData.gender)
+            setJoiningDate(editData.joiningDate)
+            setSalary(editData.salary)
+            setNumber(editData.number)
+            
+            
+          }
+        },[])
+  
+                
 
-      
-      navigate('/dashboard/trainers')
-      console.log(docRef);
-      
-      setEmail('')
-      setPassword('')
-      setFirstName('')
-      setLastName('')
-      setAge('')
-      setIsMale(false)
-      setJoinningDate('')
-      setSalary('')
+        const addNewTrainer = async (e)=> {
+          e.preventDefault()
+              
+              if(!editMode){
+                const createUser = await createUserWithEmailAndPassword(auth, email, password)
+                uniqueId = createUser.user.uid
+              }else{
+
+                uniqueId = editId
+              }
+              
+             try {
+              const docRef = await setDoc(doc(db, 'users', uniqueId), {
+                firstName,
+                lastName,
+                email,
+                age,
+                gender,
+                role: 'trainer',
+                joiningDate,
+                salary,
+                number,
+              });
+
+              if(editMode){
+                toast.success("Member Edit Success")
+              }else{
+                toast.success("Member Added Successfully")
+              }
+              
+             } catch (error) {
+              console.log(error);
+             }
+          
+
+              
+              
+              
+              setEmail('')
+              setPassword('')
+              setFirstName('')
+              setLastName('')
+              setAge('')
+              setGender('male')
+              setJoiningDate('')
+              setSalary('')
+              setNumber('')
+              if(editMode){
+                setEditData('')
+                setEditId('')
+                setEditMode('')
+                fetchTrainer()
+              }
+              navigate('/dashboard/view-trainer')
   }
 
   return (
-    <div className=" ">
-      <BackButton link={'/dashboard/trainers'}/>
-      <form className="space-y-6 bg-white  p-6  max-w-2xl mx-auto rounded-lg shadow-lg">
-        <h1 className="text-3xl font-bold text-center mb-10">Add Tariner</h1>
+    <div className=" m-6">
+      {!editMode && <BackButton link={'/dashboard/trainers'}/>}
+      
+      <form className="relative space-y-6 bg-white  p-6  max-w-2xl mx-auto rounded-lg shadow-lg">
+      {editMode && <FontAwesomeIcon className=' text-brand-primary absolute cursor-pointer right-3 top-3' icon={faX} 
+      onClick={()=>(
+        
+              setEmail(''),
+              setPassword(''),
+              setFirstName(''),
+              setLastName(''),
+              setAge(''),
+              setGender('male'),
+              setJoiningDate(''),
+              setSalary(''),
+              setNumber(''),
+              setEditId(''),
+              setEditMode(''),
+              setEditData('')
+      )}
+      />}
+        <h1 className="text-3xl font-bold text-center mb-10">{editMode? 'Edit':'Add'} Tariner</h1>
         <div className='flex flex-col sm:flex-row gap-4 w-full'>
           <div className='w-full'>
             <label htmlFor='first-name' className="block text-black">First Name</label>
@@ -109,15 +184,25 @@ const AddTrainer = () => {
                 <select
                 required
                 id="gender"
-                // value={gender}
-                onChange={(e) => {
-                  if(e.target.value === 'Female') setIsMale(false)
+                value={gender}
+                onChange={(e) => {setGender(e.target.value)
                 }}
                 className="p-2 border border-gray-300 outline-none rounded mt-1"
                 >
                     <option value="male">Male</option>
                     <option value="female">Female</option>
                 </select>
+            </div>
+            <div>
+              <label htmlFor="mo-number">Mo. Number</label>
+              <input 
+                id='mo-number' 
+                type="number"
+                required
+                className="w-full p-2 border border-gray-300 outline-none rounded mt-1" 
+                value={number}
+                onChange={(e)=>setNumber(e.target.value)}
+               />
             </div>
         </div>
         <div className='flex flex-col sm:flex-row gap-4'>
@@ -128,8 +213,8 @@ const AddTrainer = () => {
                 required 
                 className="w-full p-2 border border-gray-300 outline-none rounded mt-1" 
                 type="date" 
-                value={joinningDate}
-                onChange={(e)=>setJoinningDate(e.target.value)}
+                value={joiningDate}
+                onChange={(e)=>setJoiningDate(e.target.value)}
                 />
             </div>
             <div className='w-full'>
@@ -146,33 +231,33 @@ const AddTrainer = () => {
                 </input>
             </div>
         </div>
-        <div className="flex flex-col sm:flex-row gap-4">
-        <div className='w-full'>
-          <label htmlFor='email' className="block text-black">Email</label>
-          <input 
-            id='email'
-            placeholder='email'
-            type="text" 
-            value={email} 
-            onChange={(e) => setEmail(e.target.value)} 
-            required 
-            className="w-full p-2 border border-gray-300 outline-none rounded mt-1"
-          />
-        </div>
-        <div className='w-full'>
-          <label htmlFor='password' className="block text-black">Password</label>
-          <input 
-            id='password'
-            placeholder='type your password'
-            type="password" 
-            value={password} 
-            onChange={(e) => setPassword(e.target.value)} 
-            required 
-            className="w-full p-2 border border-gray-300 outline-none rounded mt-1"
-          />
-        </div>
-        </div>
-        <button type="button" onClick={addNewTrainer} className="w-full bg-brand-primary text-white p-2 rounded hover:bg-brand-accent">Add Member</button>
+        {!editMode && <div className="flex flex-col sm:flex-row gap-4">
+          <div className='w-full'>
+            <label htmlFor='email' className="block text-black">Email</label>
+            <input 
+              id='email'
+              placeholder='email'
+              type="text" 
+              value={email} 
+              onChange={(e) => setEmail(e.target.value)} 
+              required 
+              className="w-full p-2 border border-gray-300 outline-none rounded mt-1"
+            />
+          </div>
+          <div className='w-full'>
+            <label htmlFor='password' className="block text-black">Password</label>
+            <input 
+              id='password'
+              placeholder='type your password'
+              type="password" 
+              value={password} 
+              onChange={(e) => setPassword(e.target.value)} 
+              required 
+              className="w-full p-2 border border-gray-300 outline-none rounded mt-1"
+            />
+          </div>
+        </div>}
+        <button type="button" onClick={addNewTrainer} className="w-full bg-brand-primary text-white p-2 rounded hover:bg-brand-accent">{editMode? 'Edit':'Add'}  Member</button>
       </form>
     
     </div>

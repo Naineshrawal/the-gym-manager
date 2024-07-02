@@ -18,13 +18,7 @@ function Reports() {
               <FontAwesomeIcon icon={faReceipt} size="2x" />
               <p className="mt-2">Subscriptions Report</p>
             </Link>
-            <Link
-              to="/dashboard/expenses-report"
-              className="flex flex-col items-center bg-[#ffd166] p-6 rounded-lg shadow-lg hover:bg-[#06d6a0] transition duration-300 text-brand-dark"
-            >
-              <FontAwesomeIcon icon={faReceipt} size="2x" />
-              <p className="mt-2">Expenses Report</p>
-            </Link>
+            
            
           </div>
     

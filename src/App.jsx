@@ -18,18 +18,15 @@ import Overview from './components/Overview.jsx';
 import Trainer from './components/trainer/Trainer.jsx';
 import AddTrainer from './components/trainer/AddTrainer.jsx';
 import ViewTrainer from './components/trainer/ViewTrainer.jsx';
-import TrainerShift from './components/trainer/TrainerShift.jsx';
 import Members from './components/member/Members.jsx';
 import ViewMembers from './components/member/ViewMembers.jsx';
 import AddMember from './components/member/AddMember.jsx';
 import Packages from './components/planpackages/Packages.jsx';
-import AddPackage from './components/planpackages/AddPackage.jsx';
-import AddEquipment from './components/equipments/AddEquipment.jsx';
 import Equipments from './components/equipments/Equipments.jsx';
 import Attendance from './components/attendance/Attendance.jsx';
 import Reports from './components/reports/Reports.jsx';
-import ExpensesReport from './components/reports/ExpensesReport.jsx';
 import SubscriptionsReport from './components/reports/SubscriptionsReport.jsx';
+import InvoiceList from './components/invoices/InvoiceList.jsx';
 
 
 function App(){
@@ -49,11 +46,11 @@ function App(){
             <Route path="/trainer-login" element={<TrainerLogin />} />
             <Route path="/member-login" element={<MemberLogin />} />
             <Route path="/dashboard" element={<Dashboard />}>
+
               <Route path="overview" element={<Overview />} />
               <Route path='trainers' element={<Trainer/>} />
               <Route path='add-trainer' element={<AddTrainer/>} />
               <Route path='view-trainer' element={<ViewTrainer/>} />
-              <Route path='trainer-shift' element={<TrainerShift/>} />
 
               <Route path='members' element={<Members/>} />
               <Route path='view-members' element={<ViewMembers/>} />
@@ -65,8 +62,9 @@ function App(){
 
               <Route path='attendance' element={<Attendance/>} />
 
+              <Route path='invoice-list' element={<InvoiceList/>} />
+
               <Route path='reports' element={<Reports/>} />
-              <Route path='expenses-report' element={<ExpensesReport/>} />
               <Route path='subscriptions-report' element={<SubscriptionsReport/>} />
             </Route>
             <Route path="/store" element={<SupplementsStore />} />

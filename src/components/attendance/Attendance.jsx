@@ -65,7 +65,7 @@ const Attendance = () => {
   return (
     <>
     {!view?
-    <div className="section-container p-8 bg-white rounded-lg shadow-md  mb-5">
+    <div className="section-container m-6 ">
         <h3 className="text-2xl text-center font-bold mb-8 text-brand-dark">Attendance</h3>
         <div className=' ' >
           

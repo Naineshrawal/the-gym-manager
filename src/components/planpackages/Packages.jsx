@@ -31,7 +31,7 @@ function Packages() {
 
 
   return (
-    <div className='section-container mb-5 ' >
+    <div className='section-container m-5 ' >
         
         {!adding  ? 
         <div className='flex flex-col mt-5'>

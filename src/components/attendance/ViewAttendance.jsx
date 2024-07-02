@@ -12,8 +12,8 @@ function ViewAttendance({attendance,
     
   return (
     <>
-        <div className="section-container  mb-5 min-h-screen">
-                <button onClick={()=>(setView(false),setAttendance([]),setMemberName(''))} className='bg-black mb-10 text-white px-2 py-1 rounded-3xl'><FontAwesomeIcon fill='red' icon={faCircleChevronLeft}/> Go Back</button>
+        <div className="section-container  m-5 min-h-screen">
+                <button onClick={()=>(setView(false),setAttendance([]),setMemberName(''))} className='bg-black mb-10 text-white px-2 py-1 rounded-3xl'><FontAwesomeIcon  icon={faCircleChevronLeft}/> Go Back</button>
                 <div className='bg-white py-2 rounded-lg max-w-[500px] shadow-md mx-auto'>
                     <h1 className='text-center text-brand-neutral font-bold text-xl mt-4'>Attendance Celender</h1>
                     <p className='text-center text-lg font-semibold text-brand-primary'><span className='text-center text-base font-medium text-brand-dark'>Member Name : </span>{memberName}</p>

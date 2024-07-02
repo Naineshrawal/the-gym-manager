@@ -1,32 +1,55 @@
 // src/components/dashboard/Overview.jsx
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useUser } from '../context/UserContext';
 import Logout from './Logout';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDumbbell,  faSuitcase, faUser, faUserFriends, faCoins } from '@fortawesome/free-solid-svg-icons';
+import { faDumbbell, faUser, faUserFriends, faCoins } from '@fortawesome/free-solid-svg-icons';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../firebase/Firebase';
 
 
 const Overview = () => {
   const { user,
-    trainerList,
-    fetchTrainer,
-    TrainerLoading,
-    membersList,
-    fetchMembers,
-    memberLoading,
-    fetchEquipments,
-    equipmentLoading,
-    equipmentList, 
+          trainerList,
+          fetchTrainer,
+          TrainerLoading,
+          membersList,
+          fetchMembers,
+          memberLoading,
+          fetchEquipments,
+          equipmentLoading,
+          equipmentList, 
   } = useUser();
+  const [totalRevenue, setTotalRevenue] = useState([])
+  const [revenueLoading, setRevenueLoading] = useState(false)
+  let curMonth = new Date().getMonth() + 1
 
+const getRevenue = async()=>{
+  try{ 
+      
+      setRevenueLoading(true)
+          const docRef = collection(db, 'revenue',) 
+          const snapShot = await getDocs(docRef)
+          
+          const filterValue = snapShot.docs.filter((doc)=>parseInt(doc.data().date.slice(5,7))==curMonth)
+          setTotalRevenue(filterValue.map((doc)=>parseInt(doc.data().amount)))
+          setRevenueLoading(false)
+        }catch(err){
+          console.log(err);
+          setRevenueLoading(false)
+        }
+  }
+
+ 
   useEffect(()=>{
     fetchTrainer()
     fetchMembers()
     fetchEquipments()
+    getRevenue()
   },[])
 
   return (
-    <div className='section-container'>
+    <div className='section-container p-6'>
         <div className="bg-white flex justify-between p-6 rounded-lg shadow-lg mb-2">
             <h1 className="text-3xl font-bold">Hello, {user.name} <span className='text-sm text-gray-400'>({user.role})</span></h1>
             <Logout/>
@@ -39,7 +62,7 @@ const Overview = () => {
                 <FontAwesomeIcon icon={faUser} className="text-4xl text-brand-dark mb-2" />
                 <h2 className="text-lg font-bold">Total Members</h2>
                 {!memberLoading?
-                  <p className="text-4xl">{membersList.length}</p>
+                  <p className="text-4xl">{membersList?.length}</p>
                 :
                 <div className='w-5 mt-3 flex justify-center items-center relative h-5 border-2 border-gray-400 rounded-full'><div className='w-5 h-5 border-t-2 animate-spin rounded-full'></div></div>
                 }
@@ -48,7 +71,7 @@ const Overview = () => {
                 <FontAwesomeIcon icon={faUserFriends} className="text-4xl text-brand-primary mb-2" />
                 <h2 className="text-lg font-bold">Total Trainers</h2>
                 {!TrainerLoading ?
-                <p className="text-4xl ">{trainerList.length}</p>
+                <p className="text-4xl ">{trainerList?.length}</p>
                 :
                 <div className='w-5 mt-3 flex justify-center items-center relative h-5 border-2 border-gray-400 rounded-full'><div className='w-5 h-5 border-t-2 animate-spin rounded-full'></div></div>
                 }
@@ -58,7 +81,7 @@ const Overview = () => {
                 <FontAwesomeIcon icon={faDumbbell} className="text-4xl text-brand-secondary mb-2" />
                 <h2 className="text-lg font-bold">Total Equipments</h2>
                 {!equipmentLoading ?
-                <p className="text-4xl ">{equipmentList.length}</p>
+                <p className="text-4xl ">{equipmentList?.length}</p>
                 :
                 <div className='w-5 mt-3 flex justify-center items-center relative h-5 border-2 border-gray-400 rounded-full'><div className='w-5 h-5 border-t-2 animate-spin rounded-full'></div></div>
                 }
@@ -66,8 +89,14 @@ const Overview = () => {
               <div className="bg-brand-accent p-4 rounded-lg text-white">
               <FontAwesomeIcon icon={faCoins} className="text-4xl text-brand-primary mb-2" />
               <h2 className="text-lg font-bold">Monthly Revenue</h2>
-              <p className="text-4xl">₹12,000</p>
+              {!revenueLoading?<p className="text-4xl">
+                { totalRevenue.reduce((totalVal, curVal)=>totalVal + curVal,0)}
+              </p>
+              :
+              <><div className='w-5 mt-3 flex justify-center items-center relative h-5 border-2 border-gray-400 rounded-full'><div className='w-5 h-5 border-t-2 animate-spin rounded-full'></div></div></>
+              }
               </div>
+              {/* arr.reduce((ttl, curval)=>ttl + curval,0) */}
               {/* <div className="bg-brand-dark p-4 rounded-lg text-white">
               <FontAwesomeIcon icon={faSuitcase} className="text-4xl text-brand-primary mb-2" />
               <h2 className="text-lg font-bold">Active Subscriptions</h2>

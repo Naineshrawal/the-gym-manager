@@ -4,6 +4,7 @@ import { auth, db } from '../firebase/Firebase';
 import { useNavigate } from 'react-router-dom';
 import { collection, doc, getDoc, getDocs, query, setDoc, where, } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
+import InvoiceList from '../components/invoices/InvoiceList';
 
 const UserContext = createContext();
 
@@ -11,6 +12,7 @@ const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [invoiceId, setInvoiceId] = useState('')
 
   const [trainerList, setTrainerList] = useState([])
   const [TrainerLoading, setTrainerLoading] = useState(false)
@@ -23,6 +25,9 @@ export const UserProvider = ({ children }) => {
 
   const [equipmentList, setEquipmentList] = useState([])
   const [equipmentLoading, setEquipmentLoading] = useState(false)
+
+  const [invoiceList, setInvoiceList] = useState([])
+  const [invoiceLoading, setInvoiceLoading] = useState(false)
 
   const navigate = useNavigate();
   let uniqueId = Date.now()
@@ -51,7 +56,7 @@ export const UserProvider = ({ children }) => {
       const querySnapShot = await getDocs(q)
       let docArr = []
       querySnapShot.forEach((doc) => {
-        docArr.push(doc.data())
+        docArr.push(doc)
       })
       setTrainerList(docArr)
       setTrainerLoading(false)
@@ -123,6 +128,26 @@ export const UserProvider = ({ children }) => {
     }
 
   }
+  const getInvoices = async (memberId) => {
+      
+        setInvoiceLoading(true)
+
+      try{
+        const docRef = collection(doc(db, 'users', memberId), 'invoices')
+        const snapShot = await getDocs(docRef)
+        let invcArr = []
+        snapShot.docs.map((doc)=>invcArr.push({...doc.data(), date:doc.id}))
+        setInvoiceList(invcArr);
+        setInvoiceLoading(false)
+      }catch(err){
+        console.log(err);
+        setInvoiceLoading(false)
+      }
+  }
+
+  const createInvoice = async ()=>{
+
+  }
 
 
   useEffect(() => {
@@ -162,6 +187,7 @@ export const UserProvider = ({ children }) => {
       memberLoading, fetchMembers, membersList,
       packageLoading, addingPackage, fetchPackages, packageList,
       equipmentList, addingEquipment, equipmentLoading, fetchEquipments,
+      getInvoices,invoiceList, invoiceLoading,createInvoice,invoiceId, setInvoiceId
     }}>
       {children}
     </UserContext.Provider>

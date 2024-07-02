@@ -149,7 +149,7 @@ const Dashboard = () => {
           </ul>
         </nav>
       </aside>
-      <main className="w-full overflow-hidden p-6">
+      <main className="w-full overflow-hidden">
         <Outlet/>
       </main>
     </div>
