@@ -25,13 +25,7 @@ const Trainer = () => {
           <FontAwesomeIcon icon={faEye} size="2x" />
           <p className="mt-2">View Trainer</p>
         </Link>
-        <Link
-          to="/dashboard/trainer-shift"
-          className="flex flex-col items-center bg-[#ffd166] p-6 rounded-lg shadow-lg hover:bg-[#06d6a0] transition duration-300 text-[#073b4c]"
-        >
-          <FontAwesomeIcon icon={faClock} size="2x" />
-          <p className="mt-2">Trainer Shift</p>
-        </Link>
+        
       </div>
 
       

@@ -27,6 +27,7 @@ import Attendance from './components/attendance/Attendance.jsx';
 import Reports from './components/reports/Reports.jsx';
 import SubscriptionsReport from './components/reports/SubscriptionsReport.jsx';
 import InvoiceList from './components/invoices/InvoiceList.jsx';
+import Notifications from './components/Notifications.jsx';
 
 
 function App(){
@@ -66,6 +67,8 @@ function App(){
 
               <Route path='reports' element={<Reports/>} />
               <Route path='subscriptions-report' element={<SubscriptionsReport/>} />
+
+              <Route path='notifications' element={<Notifications/>} />
             </Route>
             <Route path="/store" element={<SupplementsStore />} />
             <Route path="/cart" element={<Cart />} />

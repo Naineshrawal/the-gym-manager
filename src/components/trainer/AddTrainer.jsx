@@ -1,6 +1,6 @@
 import { doc, setDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import { auth, db } from '../../firebase/Firebase';
+import { auth, db, imageDb } from '../../firebase/Firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import BackButton from '../BackButton';
@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faX } from '@fortawesome/free-solid-svg-icons';
 import { useUser } from '../../context/UserContext';
 import { toast } from 'react-toastify';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 
 const AddTrainer = ({
         editData,
@@ -26,6 +27,10 @@ const AddTrainer = ({
         const [joiningDate, setJoiningDate] = useState('')
         const [salary, setSalary] = useState('')
         const [number, setNumber] = useState('')
+        const [profileImg, setProfileImg] = useState('')
+        const [profileUrl, setProfileUrl] = useState('')
+        const [formError, setFormError] = useState(false)
+        const [uploadSuccess, setUploadSuccess] = useState(false)
 
         const {fetchTrainer} = useUser()
 
@@ -55,15 +60,44 @@ const AddTrainer = ({
             setJoiningDate(editData.joiningDate)
             setSalary(editData.salary)
             setNumber(editData.number)
-            
+            setProfileUrl(editData.profileUrl)
             
           }
         },[])
+
+        useEffect(()=>{
+          // profile image storing
+      
+          if(!editMode && profileImg){ try{const imgRef = ref(imageDb, `images/${profileImg.name + Date.now()}`)
+          uploadBytes(imgRef, profileImg).then((imgDoc)=>{
+            getDownloadURL(imgDoc.ref).then((url)=>setProfileUrl(url))
+            setUploadSuccess(true)
+          })}catch(err){
+           console.log('img upload error', err);
+          }
+          
+        }},[profileImg])
   
                 
 
         const addNewTrainer = async (e)=> {
           e.preventDefault()
+
+          
+
+          // validating form 
+          if(!firstName ||  !lastName || 
+            !number || !age || !salary || 
+            !joiningDate || !email || 
+            !password || !profileImg){
+              setFormError(true)
+              return
+            }else{
+              setFormError(false)
+            }
+            
+            if(!uploadSuccess)return 
+           
               
               if(!editMode){
                 const createUser = await createUserWithEmailAndPassword(auth, email, password)
@@ -84,6 +118,7 @@ const AddTrainer = ({
                 joiningDate,
                 salary,
                 number,
+                profileUrl,
               });
 
               if(editMode){
@@ -109,6 +144,7 @@ const AddTrainer = ({
               setJoiningDate('')
               setSalary('')
               setNumber('')
+              setUploadSuccess(false)
               if(editMode){
                 setEditData('')
                 setEditId('')
@@ -231,7 +267,8 @@ const AddTrainer = ({
                 </input>
             </div>
         </div>
-        {!editMode && <div className="flex flex-col sm:flex-row gap-4">
+        {!editMode && 
+        <div className="flex flex-col sm:flex-row gap-4">
           <div className='w-full'>
             <label htmlFor='email' className="block text-black">Email</label>
             <input 
@@ -257,6 +294,13 @@ const AddTrainer = ({
             />
           </div>
         </div>}
+        
+        {!editMode &&  <div>
+            <label htmlFor="profile-img">Select Profile Image &nbsp;&#10148;&nbsp;</label>
+            <input id='profile-img' type="file" onChange={(e)=>setProfileImg(e.target.files[0])}/>
+            {!uploadSuccess && profileImg && <img className='rounded-full w-6 sm:w-8'  src="/images/loading-icon.svg" alt="loading icon" />}
+          </div>}
+          {formError && <span className='text-red-600 font-bold'>Please fill all the fields</span>}
         <button type="button" onClick={addNewTrainer} className="w-full bg-brand-primary text-white p-2 rounded hover:bg-brand-accent">{editMode? 'Edit':'Add'}  Member</button>
       </form>
     

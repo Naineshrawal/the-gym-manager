@@ -1,13 +1,14 @@
-import { Timestamp, addDoc, collection, doc, setDoc } from 'firebase/firestore';
-import React, { useCallback, useEffect, useState } from 'react';
-import { auth, db } from '../../firebase/Firebase';
+import {doc, setDoc } from 'firebase/firestore';
+import React, {  useEffect, useRef, useState } from 'react';
+import { auth, db, imageDb } from '../../firebase/Firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { Await, useNavigate } from 'react-router-dom';
+import {useNavigate } from 'react-router-dom';
 import BackButton from '../BackButton';
 import { useUser } from '../../context/UserContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faX } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 
 function AddMember({
   editData,
@@ -20,14 +21,18 @@ function AddMember({
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [number, setNumber] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [age, setAge] = useState('')
   const [gender, setGender] = useState('Male')
-  const [joiningDate, setJoiningDate] = useState('')
-  
   const [packagePlan, setPackagePlan] = useState('')
   const [amount, setAmount] = useState('')
+  const [joiningDate, setJoiningDate] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [profileImg, setProfileImg] = useState('')
+  const [profileUrl, setProfileUrl] = useState('')
+  
+  const [formError, setFormError] = useState(false)
+  const [uploadSuccess, setUploadSuccess] = useState(false)
   const packageDuration = []
   const navigate = useNavigate()
   let lastPaymentDate ;
@@ -50,36 +55,66 @@ function AddMember({
         setNumber(editData.number)
         setPackagePlan(editData.packagePlan)
         setAmount(editData.amount) 
-       
+        setProfileUrl(editData.profileUrl)
         
          
   }
        
   },[])
 
+  useEffect(()=>{
+    // profile image storing
+
+    if(!editMode && profileImg){ try{const imgRef = ref(imageDb, `images/${profileImg.name + Date.now()}`)
+    uploadBytes(imgRef, profileImg).then((imgDoc)=>{
+      getDownloadURL(imgDoc.ref).then((url)=>setProfileUrl(url))
+      setUploadSuccess(true)
+    })}catch(err){
+     console.log('img upload error', err);
+    }
+    console.log('runn1');
+  }},[profileImg])
+
   
   
   const addNewMember = async (e)=> {
     e.preventDefault()
+    // form validation
+
+    if(!firstName ||  !lastName || 
+      !number || !age || 
+      !packagePlan || !amount || 
+      !joiningDate || !email || 
+      !password || !profileImg){
+        setFormError(true)
+        return
+      }else{
+        setFormError(false)
+      }
+
+      if(!uploadSuccess)return
+      
+
     
     const filteredDuration = packageDuration.filter((doc)=>{return doc.plan == packagePlan})
     if(!editMode) {
-     
+    //  creating auth
       lastPaymentDate = joiningDate
-      console.log(lastPaymentDate);
+      
     const createUser = await createUserWithEmailAndPassword(auth, email, password)
     uniqueId = createUser.user.uid
-   
-    
-    
+     
   }else{
 
     uniqueId = editId   
   }
 
   let subscriptionStatus = 'active'
-  if(editMode) {subscriptionStatus = editData.subscription
+  if(editMode) {
+    subscriptionStatus = editData.subscription
     lastPaymentDate = editData.lastPaymentDate}
+
+   
   
     try {
       
@@ -103,6 +138,8 @@ function AddMember({
     }
       
       
+      
+      // storing member data
       await setDoc(doc(db, 'users', uniqueId), {
             firstName,
             lastName,
@@ -116,6 +153,7 @@ function AddMember({
             packagePlan,
             joiningDate,
             amount,
+            profileUrl:profileUrl,
             duration:filteredDuration[0].duration
           });
           
@@ -141,6 +179,8 @@ function AddMember({
       setNumber('')
       setPackagePlan('')
       setAmount('')
+      setProfileUrl('')
+      setUploadSuccess(false)
       if(editMode){
         setEditData(null)
         setEditMode(false)
@@ -169,7 +209,8 @@ function AddMember({
         setAmount(''),
         setEditData(null),
         setEditMode(false),
-        setEditId('')
+        setEditId(''),
+        setProfileUrl('')
       )}
       />}
         <h1 className="text-3xl font-bold text-center mb-10">{editMode? 'Edit' :'Add'} Member</h1>
@@ -177,6 +218,7 @@ function AddMember({
           <div className='w-full'>
             <label htmlFor='first-name' className="block text-black">First Name</label>
             <input 
+              
               id='first-name'
               placeholder='Name'
               type="text" 
@@ -189,6 +231,7 @@ function AddMember({
           <div className='w-full'>
             <label htmlFor='last-name' className="block text-black">Last Name</label>
             <input 
+              
               id='last-name'
               placeholder='Surname'
               type="text" 
@@ -204,6 +247,7 @@ function AddMember({
             <div className=''>
                 <label className='text-gray-700' htmlFor="MoNumber">Mobile Number</label>
                 <input 
+                
                 id='MoNumber'
                 required 
                 className="w-full  p-2 border border-gray-300 outline-none rounded mt-1 " 
@@ -215,6 +259,7 @@ function AddMember({
             <div className='w-20'>
                 <label className='text-gray-700' htmlFor="age">Age</label>
                 <input 
+                
                 id='age'
                 required 
                 className="w-full  p-2 border border-gray-300 outline-none rounded mt-1 " 
@@ -285,10 +330,12 @@ function AddMember({
            
         </div>
 
-        {!editMode && <div className="flex flex-col sm:flex-row gap-4">
+        {!editMode && 
+        <div className="flex flex-col sm:flex-row gap-4">
           <div className='w-full'>
             <label htmlFor='email' className="block text-black">Member Email</label>
             <input 
+              
               id='email'
               placeholder='email'
               type="text" 
@@ -311,7 +358,14 @@ function AddMember({
             />
           </div>
         </div>}
-        <button type='button' onClick={(e)=>addNewMember(e)} className="w-full bg-brand-primary text-white p-2 rounded hover:bg-brand-accent">{editMode? 'Edit' :'Add'} Member</button>
+          {!editMode &&  
+          <div>
+            <label htmlFor="profile-img">Select Profile Image &nbsp;&#10148;&nbsp;</label>
+            <input  id='profile-img' type="file" onChange={(e)=>setProfileImg(e.target.files[0])}/>
+            {!uploadSuccess && profileImg && <img className='rounded-full w-6 sm:w-8'  src="/images/loading-icon.svg" alt="loading icon" />}
+          </div>}
+        {formError && <span className='text-red-600 font-bold'>Please fill all the fields</span>}
+        <button type='button' onClick={(e)=>addNewMember(e)} className="w-full  bg-brand-primary text-white p-2 rounded hover:bg-brand-accent">{editMode? 'Edit' :'Add'} Member</button>
       </form>
     
     </div>

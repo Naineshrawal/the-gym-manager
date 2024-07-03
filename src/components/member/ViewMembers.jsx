@@ -1,6 +1,6 @@
 import React, { useEffect,  useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCross, faEdit, faFileInvoice, faTrash, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faFileInvoice, faTrash, faXmark } from '@fortawesome/free-solid-svg-icons';
 import BackButton from '../BackButton';
 import { useUser } from '../../context/UserContext';
 import { deleteDoc, doc, setDoc } from 'firebase/firestore';
@@ -8,10 +8,9 @@ import { db } from '../../firebase/Firebase';
 import { toast } from 'react-toastify';
 import AddMember from './AddMember';
 import { useNavigate } from 'react-router-dom';
-import InvoiceList from '../invoices/InvoiceList';
 
 function ViewMembers() {
-    const {memberLoading,fetchMembers,membersList, fetchPackages, packageList, setInvoiceId} = useUser()
+    const {memberLoading,fetchMembers,membersList, fetchPackages, packageList, setInvoiceId, notificationsArr} = useUser()
     const [renewBox, setRenewBox] = useState('')
     const [packagePlan, setPackagePlan] = useState('Select Plan')
     const [newPaymentDate, setNewPaymentDate] = useState('')
@@ -81,7 +80,7 @@ function ViewMembers() {
               }
             }
             updatePlan()
-            
+            notificationsArr.push({subscription:'Expired',name:docs.name})
             return null
           }else if(lastPaymentDay === 31 && monthsRemaining <=0 && daysRemaining <=1){
             const updatePlan = async ()=> {
@@ -279,7 +278,7 @@ function ViewMembers() {
                                     </td>
                                     {/* profile Img */}
                                     <td  className="px-6 py-4">
-                                        {"image"}
+                                        <div className='overflow-hidden w-10 h-10 flex justify-center'><img  src={doc.data()?.profileUrl} alt="profile-img" /></div>
                                     </td>
                                     {/* Name */}
                                     <td  scope="row" className="px-6 py-4 font-medium ">

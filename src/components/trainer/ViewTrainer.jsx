@@ -99,7 +99,7 @@ const ViewTrainer =  () => {
                                     </td>
                                     {/* profile Img */}
                                     <td  className="px-6 py-4">
-                                        {"image"}
+                                    <div className='overflow-hidden w-10 h-10 flex justify-center'><img  src={doc.data()?.profileUrl} alt="profile-img" /></div>
                                     </td>
                                     {/* Number*/}
                                     <td  className="px-6 py-4">

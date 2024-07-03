@@ -4,7 +4,6 @@ import { auth, db } from '../firebase/Firebase';
 import { useNavigate } from 'react-router-dom';
 import { collection, doc, getDoc, getDocs, query, setDoc, where, } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
-import InvoiceList from '../components/invoices/InvoiceList';
 
 const UserContext = createContext();
 
@@ -28,6 +27,8 @@ export const UserProvider = ({ children }) => {
 
   const [invoiceList, setInvoiceList] = useState([])
   const [invoiceLoading, setInvoiceLoading] = useState(false)
+
+  let notificationsArr = []
 
   const navigate = useNavigate();
   let uniqueId = Date.now()
@@ -187,7 +188,8 @@ export const UserProvider = ({ children }) => {
       memberLoading, fetchMembers, membersList,
       packageLoading, addingPackage, fetchPackages, packageList,
       equipmentList, addingEquipment, equipmentLoading, fetchEquipments,
-      getInvoices,invoiceList, invoiceLoading,createInvoice,invoiceId, setInvoiceId
+      getInvoices,invoiceList, invoiceLoading,createInvoice,invoiceId, setInvoiceId,
+      notificationsArr 
     }}>
       {children}
     </UserContext.Provider>
