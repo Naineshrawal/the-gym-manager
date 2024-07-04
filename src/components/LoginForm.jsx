@@ -18,7 +18,6 @@ function LoginForm() {
         setEmail('')
         setPassword('')
       
-      
       navigate('/dashboard/overview')
     }
     catch(err){

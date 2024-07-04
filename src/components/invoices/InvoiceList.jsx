@@ -22,7 +22,7 @@ function InvoiceList() {
 
 
   return(<>
-            <div className='relative '>
+            <div className='relative min-h-screen'>
             {!viewInvoice && 
             <div className='mt-6 ml-6'><BackButton link={'/dashboard/view-members'}/></div>}
                 {/* invoice page */}

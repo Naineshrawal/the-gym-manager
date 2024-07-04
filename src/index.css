@@ -33,7 +33,7 @@
       /* Customize the scrollbar width */
       border-radius: 5px;
       width: 2px;
-      height: 2px;
+      height: 4px;
   }
   
   ::-webkit-scrollbar-track {

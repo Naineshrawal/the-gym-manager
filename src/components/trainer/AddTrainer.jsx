@@ -29,6 +29,7 @@ const AddTrainer = ({
         const [number, setNumber] = useState('')
         const [profileImg, setProfileImg] = useState('')
         const [profileUrl, setProfileUrl] = useState('')
+        const [profileImgName, setProfileImgName] = useState('')
         const [formError, setFormError] = useState(false)
         const [uploadSuccess, setUploadSuccess] = useState(false)
 
@@ -61,7 +62,8 @@ const AddTrainer = ({
             setSalary(editData.salary)
             setNumber(editData.number)
             setProfileUrl(editData.profileUrl)
-            
+            setProfileImgName(editData.profileImgName)
+            setEmail(editData.email)
           }
         },[])
 
@@ -70,6 +72,7 @@ const AddTrainer = ({
       
           if(!editMode && profileImg){ try{const imgRef = ref(imageDb, `images/${profileImg.name + Date.now()}`)
           uploadBytes(imgRef, profileImg).then((imgDoc)=>{
+            setProfileImgName(imgDoc.ref.name)
             getDownloadURL(imgDoc.ref).then((url)=>setProfileUrl(url))
             setUploadSuccess(true)
           })}catch(err){
@@ -88,15 +91,19 @@ const AddTrainer = ({
           // validating form 
           if(!firstName ||  !lastName || 
             !number || !age || !salary || 
-            !joiningDate || !email || 
-            !password || !profileImg){
+            !joiningDate || !email ){
+              console.log(email);
               setFormError(true)
               return
+            }else if((!password || !profileImg )&& !editMode){
+              setFormError(true)
+              return
+
             }else{
               setFormError(false)
             }
             
-            if(!uploadSuccess)return 
+            if(!uploadSuccess && !editMode)return 
            
               
               if(!editMode){
@@ -119,6 +126,7 @@ const AddTrainer = ({
                 salary,
                 number,
                 profileUrl,
+                profileImgName,
               });
 
               if(editMode){
@@ -145,6 +153,7 @@ const AddTrainer = ({
               setSalary('')
               setNumber('')
               setUploadSuccess(false)
+              setProfileImgName('')
               if(editMode){
                 setEditData('')
                 setEditId('')
@@ -173,7 +182,8 @@ const AddTrainer = ({
               setNumber(''),
               setEditId(''),
               setEditMode(''),
-              setEditData('')
+              setEditData(''),
+              setProfileImgName('')
       )}
       />}
         <h1 className="text-3xl font-bold text-center mb-10">{editMode? 'Edit':'Add'} Tariner</h1>
@@ -295,10 +305,11 @@ const AddTrainer = ({
           </div>
         </div>}
         
-        {!editMode &&  <div>
-            <label htmlFor="profile-img">Select Profile Image &nbsp;&#10148;&nbsp;</label>
+        {!editMode &&  
+          <div className='flex'>
+            <label className='mr-8' htmlFor="profile-img">Select Profile Image &nbsp;&#10148;&nbsp;</label>
+            {!uploadSuccess && profileImg && <img className='rounded-full w-6 sm:w-8 '  src="/images/loading-icon.svg" alt="loading icon" />}
             <input id='profile-img' type="file" onChange={(e)=>setProfileImg(e.target.files[0])}/>
-            {!uploadSuccess && profileImg && <img className='rounded-full w-6 sm:w-8'  src="/images/loading-icon.svg" alt="loading icon" />}
           </div>}
           {formError && <span className='text-red-600 font-bold'>Please fill all the fields</span>}
         <button type="button" onClick={addNewTrainer} className="w-full bg-brand-primary text-white p-2 rounded hover:bg-brand-accent">{editMode? 'Edit':'Add'}  Member</button>

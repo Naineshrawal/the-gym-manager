@@ -38,7 +38,8 @@ function InvoicePage({
     }
 
   return (
-    <div ref={downloadFileRef} className='relative  w-[500px] p-6 mt-10 mx-auto bg-white'>
+    <div className='overflow-auto'>
+        <div ref={downloadFileRef} className='relative  w-[500px] p-6 mt-10 mx-auto bg-white'>
         <div className='absolute space-x-2 left-[50%] -translate-x-[50%] -top-7'>
             <button 
             className=' text-brand-secondary bg-brand-neutral  cursor-pointer  px-4 rounded-xl' 
@@ -94,6 +95,7 @@ function InvoicePage({
             <h1 className='text-end mt-5'>Signature</h1>
 
         </div>
+    </div>
     </div>
   )
 }

@@ -28,6 +28,7 @@ import Reports from './components/reports/Reports.jsx';
 import SubscriptionsReport from './components/reports/SubscriptionsReport.jsx';
 import InvoiceList from './components/invoices/InvoiceList.jsx';
 import Notifications from './components/Notifications.jsx';
+import ProtectedRoute from './components/ProtectedRoute.jsx';
 
 
 function App(){
@@ -50,25 +51,61 @@ function App(){
 
               <Route path="overview" element={<Overview />} />
               <Route path='trainers' element={<Trainer/>} />
-              <Route path='add-trainer' element={<AddTrainer/>} />
+              <Route path='add-trainer' element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <AddTrainer/>
+                </ProtectedRoute>
+                } />
               <Route path='view-trainer' element={<ViewTrainer/>} />
 
-              <Route path='members' element={<Members/>} />
-              <Route path='view-members' element={<ViewMembers/>} />
-              <Route path='add-member' element={<AddMember/>} />
+              <Route path='members' element={
+                <ProtectedRoute allowedRoles={['admin', 'trainer']}>
+                  <Members/>
+                </ProtectedRoute>
+              } />
+              <Route path='view-members' element={
+                <ProtectedRoute allowedRoles={['admin', 'trainer']}>
+                  <ViewMembers/>
+                </ProtectedRoute>
+                } />
+              <Route path='add-member' element={
+                <ProtectedRoute allowedRoles={['admin','trainer']}>
+                  <AddMember/>
+                </ProtectedRoute>
+                } />
               
               <Route path='packages' element={<Packages/>} />
               
               <Route path='equipments' element={<Equipments/>} />
 
-              <Route path='attendance' element={<Attendance/>} />
+              <Route path='attendance' element={
+                <ProtectedRoute allowedRoles={['admin', 'trainer']}>
+                  <Attendance/>
+                </ProtectedRoute>
+              } />
 
-              <Route path='invoice-list' element={<InvoiceList/>} />
+              <Route path='invoice-list' element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <InvoiceList/>
+                </ProtectedRoute>
+                } />
 
-              <Route path='reports' element={<Reports/>} />
-              <Route path='subscriptions-report' element={<SubscriptionsReport/>} />
+              <Route path='reports' element={
+                <ProtectedRoute allowedRoles={['admin', 'trainer']}>
+                  <Reports/>
+                </ProtectedRoute>
+                } />
+              <Route path='subscriptions-report' element={
+                <ProtectedRoute allowedRoles={['admin', 'trainer']}>
+                  <SubscriptionsReport/>
+                </ProtectedRoute>
+            } />
 
-              <Route path='notifications' element={<Notifications/>} />
+              <Route path='notifications' element={
+                <ProtectedRoute allowedRoles={['admin','trainer']}>
+                  <Notifications/>
+                </ProtectedRoute>
+                } />
             </Route>
             <Route path="/store" element={<SupplementsStore />} />
             <Route path="/cart" element={<Cart />} />

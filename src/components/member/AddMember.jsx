@@ -30,6 +30,7 @@ function AddMember({
   const [password, setPassword] = useState('')
   const [profileImg, setProfileImg] = useState('')
   const [profileUrl, setProfileUrl] = useState('')
+  const [profileImgName, setProfileImgName] = useState('')
   
   const [formError, setFormError] = useState(false)
   const [uploadSuccess, setUploadSuccess] = useState(false)
@@ -56,23 +57,24 @@ function AddMember({
         setPackagePlan(editData.packagePlan)
         setAmount(editData.amount) 
         setProfileUrl(editData.profileUrl)
-        
+        setProfileImgName(editData.profileImgName)
          
   }
        
   },[])
 
   useEffect(()=>{
-    // profile image storing
+    // profile image storing in firebase storage
 
     if(!editMode && profileImg){ try{const imgRef = ref(imageDb, `images/${profileImg.name + Date.now()}`)
     uploadBytes(imgRef, profileImg).then((imgDoc)=>{
+      setProfileImgName(imgDoc.ref.name)
       getDownloadURL(imgDoc.ref).then((url)=>setProfileUrl(url))
       setUploadSuccess(true)
     })}catch(err){
      console.log('img upload error', err);
     }
-    console.log('runn1');
+    
   }},[profileImg])
 
   
@@ -81,23 +83,32 @@ function AddMember({
     e.preventDefault()
     // form validation
 
+    
+
     if(!firstName ||  !lastName || 
       !number || !age || 
       !packagePlan || !amount || 
-      !joiningDate || !email || 
-      !password || !profileImg){
+      !joiningDate || !email 
+     ){
+       console.log('runnnn1');
+        setFormError(true)
+        return
+      }else if((!password ||  !profileImg) && !editMode){
         setFormError(true)
         return
       }else{
         setFormError(false)
       }
 
-      if(!uploadSuccess)return
+      
+      if(!uploadSuccess && !editMode)return
       
 
     
     const filteredDuration = packageDuration.filter((doc)=>{return doc.plan == packagePlan})
     if(!editMode) {
+
+
     //  creating auth
       lastPaymentDate = joiningDate
       
@@ -154,6 +165,7 @@ function AddMember({
             joiningDate,
             amount,
             profileUrl:profileUrl,
+            profileImgName,
             duration:filteredDuration[0].duration
           });
           
@@ -181,6 +193,7 @@ function AddMember({
       setAmount('')
       setProfileUrl('')
       setUploadSuccess(false)
+      setProfileImgName('')
       if(editMode){
         setEditData(null)
         setEditMode(false)
@@ -210,7 +223,8 @@ function AddMember({
         setEditData(null),
         setEditMode(false),
         setEditId(''),
-        setProfileUrl('')
+        setProfileUrl(''),
+        setProfileImgName('')
       )}
       />}
         <h1 className="text-3xl font-bold text-center mb-10">{editMode? 'Edit' :'Add'} Member</h1>
@@ -359,10 +373,10 @@ function AddMember({
           </div>
         </div>}
           {!editMode &&  
-          <div>
-            <label htmlFor="profile-img">Select Profile Image &nbsp;&#10148;&nbsp;</label>
-            <input  id='profile-img' type="file" onChange={(e)=>setProfileImg(e.target.files[0])}/>
+          <div className='flex'>
+            <label className='mr-8' htmlFor="profile-img">Select Profile Image &nbsp;&#10148;&nbsp;</label>
             {!uploadSuccess && profileImg && <img className='rounded-full w-6 sm:w-8'  src="/images/loading-icon.svg" alt="loading icon" />}
+            <input  id='profile-img' type="file" onChange={(e)=>setProfileImg(e.target.files[0])}/>
           </div>}
         {formError && <span className='text-red-600 font-bold'>Please fill all the fields</span>}
         <button type='button' onClick={(e)=>addNewMember(e)} className="w-full  bg-brand-primary text-white p-2 rounded hover:bg-brand-accent">{editMode? 'Edit' :'Add'} Member</button>

@@ -27,7 +27,7 @@ export const UserProvider = ({ children }) => {
 
   const [invoiceList, setInvoiceList] = useState([])
   const [invoiceLoading, setInvoiceLoading] = useState(false)
-
+  
   let notificationsArr = []
 
   const navigate = useNavigate();
@@ -146,9 +146,7 @@ export const UserProvider = ({ children }) => {
       }
   }
 
-  const createInvoice = async ()=>{
-
-  }
+  
 
 
   useEffect(() => {
@@ -157,7 +155,6 @@ export const UserProvider = ({ children }) => {
         const ref = doc(db, 'users', user.uid);
         const userDoc = await getDoc(ref);
         let dataStore = userDoc.data();
-  
         const adminData = localStorage.getItem("adminData");
         const parsedAdminData = adminData ? JSON.parse(adminData) : null;
   
@@ -171,6 +168,7 @@ export const UserProvider = ({ children }) => {
   
         setUser(dataStore);
       } else {
+        localStorage.removeItem('adminData');
         console.log('user is logged out');
         setUser(null);
         navigate('/');
@@ -188,8 +186,8 @@ export const UserProvider = ({ children }) => {
       memberLoading, fetchMembers, membersList,
       packageLoading, addingPackage, fetchPackages, packageList,
       equipmentList, addingEquipment, equipmentLoading, fetchEquipments,
-      getInvoices,invoiceList, invoiceLoading,createInvoice,invoiceId, setInvoiceId,
-      notificationsArr 
+      getInvoices,invoiceList, invoiceLoading,invoiceId, setInvoiceId,
+      notificationsArr,
     }}>
       {children}
     </UserContext.Provider>
