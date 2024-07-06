@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {  faX } from '@fortawesome/free-solid-svg-icons'
 import { toast } from 'react-toastify'
+import { logger } from '../logging/Logging'
 
 function AddPackage({
                         editing, 
@@ -15,17 +16,17 @@ function AddPackage({
                         setEditId,
                     }) {
 
-                        const [packageName, setPackageName] = useState('')
-                        const [description, setDescription] = useState('')
-                        const [amount, setAmount] = useState('')
-                        const [duration, setDuration] = useState('1 month')
+    const [packageName, setPackageName] = useState('')
+    const [description, setDescription] = useState('')
+    const [amount, setAmount] = useState('')
+    const [duration, setDuration] = useState('1 month')
                         
-                        const {addingPackage} = useUser()
-                        const navigate = useNavigate()
+    const {addingPackage} = useUser()
+    const navigate = useNavigate()
                         
 
     
-                        
+// setting data for editmode                  
     useEffect(()=>{
         if(editData){
             setPackageName(editData.name)
@@ -34,6 +35,8 @@ function AddPackage({
             setDescription(editData.description)
         }
     },[editData])
+
+// editing/adding new package
     const addNewPackage = async ()=>{
       
         try{
@@ -53,10 +56,10 @@ function AddPackage({
             }
             
         }catch(err){
-            console.log(err);
+            logger.error("error while adding package", err)
         }
         
-       
+// cearing state data after adding/ editing package 
         setPackageName('')
         setDescription('')
         setAmount('')
@@ -121,17 +124,17 @@ function AddPackage({
                   </select>
               </div>
             </div>
-          <div className="mb-2">
-            <label htmlFor="description" className="block text-gray-700">Description:</label>
-            <textarea
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded mt-1 "
-              required
-            />
-          </div>
-          <button  onClick={addNewPackage} type='button' className="w-full bg-brand-primary text-white p-2 rounded">{editing? 'Edit':'Add'}</button>
+            <div className="mb-2">
+              <label htmlFor="description" className="block text-gray-700">Description:</label>
+              <textarea
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded mt-1 "
+                required
+              />
+            </div>
+            <button  onClick={addNewPackage} type='button' className="w-full bg-brand-primary text-white p-2 rounded">{editing? 'Edit':'Add'}</button>
           </form>
         </div>
   )

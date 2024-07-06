@@ -1,25 +1,28 @@
 import { faCircleChevronLeft, faSquare } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
+import { useUser } from '../../context/UserContext'
 
 function ViewAttendance({attendance, 
     setView, 
     setAttendance,
     setMemberName,
     memberName}) {
+        const {user} = useUser()
     const months = ['JAN','FAB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC']
  
     
   return (
     <>
         <div className="section-container  m-5 min-h-screen">
-                <button onClick={()=>(setView(false),setAttendance([]),setMemberName(''))} className='bg-black mb-10 text-white px-2 py-1 rounded-3xl'><FontAwesomeIcon  icon={faCircleChevronLeft}/> Go Back</button>
+                {user.role==='admin' && <button onClick={()=>(setView(false),setAttendance([]),setMemberName(''))} className='bg-black mb-10 text-white px-2 py-1 rounded-3xl'><FontAwesomeIcon  icon={faCircleChevronLeft}/> Go Back</button>}
                 <div className='bg-white py-2 rounded-lg max-w-[500px] shadow-md mx-auto'>
                     <h1 className='text-center text-brand-neutral font-bold text-xl mt-4'>Attendance Celender</h1>
                     <p className='text-center text-lg font-semibold text-brand-primary'><span className='text-center text-base font-medium text-brand-dark'>Member Name : </span>{memberName}</p>
                     <div className='rounded-lg overflow-hidden mx-auto max-w-[482px] h-[264px]'>
+                        
                     {attendance.length?
-                    <div className='bg-[#e8e5ec] p-1  gap-1 max-w-[482px] h-[264px] overflow-y-scroll mx-auto flex flex-wrap '>
+                    <div className='bg-[#e8e5ec] p-1  gap-1 max-w-[482px] h-[264px] overflow-y-scroll mx-auto flex  flex-wrap '>
                         {attendance.map((att, index)=>(
                             <div className={`w-16 h-12 mb-1 flex flex-col items-center rounded justify-center ${att.status == 'present' ? 'bg-green-600': 'bg-red-500'}`} 
                             key={index}>

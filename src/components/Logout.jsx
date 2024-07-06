@@ -1,13 +1,14 @@
 import React from 'react'
 import { auth } from '../firebase/Firebase';
 import { signOut } from 'firebase/auth';
+import { logger } from './logging/Logging';
 
 function Logout() {
 
     const getLogout =  ()=>{
         signOut(auth)
         
-        console.log("user sign out");
+        logger.info("user sign out");
       }
   return (
     <div>

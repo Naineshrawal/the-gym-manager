@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faX } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { logger } from '../logging/Logging';
 
 function AddMember({
   editData,
@@ -44,114 +45,113 @@ function AddMember({
 
 
   
-  useEffect(()=>{
-       fetchPackages()
-       if(editMode){
-        setFirstName(editData.firstName)
-        setLastName(editData.lastName)
-        setAge(editData.age)
-        setEmail(editData.email)
-        setGender(editData.gender)
-        setJoiningDate(editData.joiningDate)
-        setNumber(editData.number)
-        setPackagePlan(editData.packagePlan)
-        setAmount(editData.amount) 
-        setProfileUrl(editData.profileUrl)
-        setProfileImgName(editData.profileImgName)
-         
-  }
-       
-  },[])
+//  setting initial data while editing
+    useEffect(()=>{
+        fetchPackages()
 
-  useEffect(()=>{
-    // profile image storing in firebase storage
-
-    if(!editMode && profileImg){ try{const imgRef = ref(imageDb, `images/${profileImg.name + Date.now()}`)
-    uploadBytes(imgRef, profileImg).then((imgDoc)=>{
-      setProfileImgName(imgDoc.ref.name)
-      getDownloadURL(imgDoc.ref).then((url)=>setProfileUrl(url))
-      setUploadSuccess(true)
-    })}catch(err){
-     console.log('img upload error', err);
+        if(editMode){
+          setFirstName(editData.firstName)
+          setLastName(editData.lastName)
+          setAge(editData.age)
+          setEmail(editData.email)
+          setGender(editData.gender)
+          setJoiningDate(editData.joiningDate)
+          setNumber(editData.number)
+          setPackagePlan(editData.packagePlan)
+          setAmount(editData.amount) 
+          setProfileUrl(editData.profileUrl)
+          setProfileImgName(editData.profileImgName)
+          
     }
-    
-  }},[profileImg])
+        
+    },[])
+
+// profile image storing in firebase storage
+    useEffect(()=>{
+
+      if(!editMode && profileImg){ try{const imgRef = ref(imageDb, `images/${profileImg.name + Date.now()}`)
+      uploadBytes(imgRef, profileImg).then((imgDoc)=>{
+        setProfileImgName(imgDoc.ref.name)
+        getDownloadURL(imgDoc.ref).then((url)=>setProfileUrl(url))
+        setUploadSuccess(true)
+      })}catch(err){
+      logger.error('img upload error', err);
+      }
+      
+    }},[profileImg])
 
   
-  
+// editing/adding new member  
   const addNewMember = async (e)=> {
     e.preventDefault()
+
     // form validation
+      if(!firstName ||  !lastName || !number || !age || !packagePlan || !amount || !joiningDate || !email )
+        {
+                console.log('runnnn1');
+                  setFormError(true)
+                  return
 
-    
+        }else if((!password ||  !profileImg) && !editMode){
 
-    if(!firstName ||  !lastName || 
-      !number || !age || 
-      !packagePlan || !amount || 
-      !joiningDate || !email 
-     ){
-       console.log('runnnn1');
-        setFormError(true)
-        return
-      }else if((!password ||  !profileImg) && !editMode){
-        setFormError(true)
-        return
-      }else{
-        setFormError(false)
-      }
+          setFormError(true)
+          return
+        }else{
+
+          setFormError(false)
+        }
 
       
       if(!uploadSuccess && !editMode)return
+      const filteredDuration = packageDuration.filter((doc)=>{return doc.plan == packagePlan})
       
-
-    
-    const filteredDuration = packageDuration.filter((doc)=>{return doc.plan == packagePlan})
-    if(!editMode) {
-
 
     //  creating auth
+    if(!editMode) {
       lastPaymentDate = joiningDate
-      
-    const createUser = await createUserWithEmailAndPassword(auth, email, password)
-    uniqueId = createUser.user.uid
+        try{
+            const createUser = await createUserWithEmailAndPassword(auth, email, password)
+            uniqueId = createUser.user.uid
+        }catch(err){
+            logger.error("error while create authentication", err)
+        }
      
-  }else{
+    }else{
+      uniqueId = editId   
+    }
 
-    uniqueId = editId   
-  }
-
-  let subscriptionStatus = 'active'
-  if(editMode) {
-    subscriptionStatus = editData.subscription
-    lastPaymentDate = editData.lastPaymentDate}
+    let subscriptionStatus = 'active'
+    if(editMode) {
+        subscriptionStatus = editData.subscription
+        lastPaymentDate = editData.lastPaymentDate
+    }
 
    
-  
+    //  adding member in firestore
     try {
-      
        // craeating Invoice
-    try{
-      const docRef = doc(db, `users/${uniqueId}/invoices`, lastPaymentDate)
-        await setDoc(docRef, {
-            name:firstName +' '+ lastName,
-            number,
-            packagePlan,
-            amount,
+          try{
+            const docRef = doc(db, `users/${uniqueId}/invoices`, lastPaymentDate)
+              await setDoc(docRef, {
+                  name:firstName +' '+ lastName,
+                  number,
+                  packagePlan,
+                  amount,
 
-          })
-            // adding revenue
-        await setDoc(doc(db, 'revenue', lastPaymentDate),{
-              date:lastPaymentDate,
-              amount,
-        })
-    }catch(err){
-      console.log(err);
-    }
+                })
+                  // adding revenue
+              await setDoc(doc(db, 'revenue', lastPaymentDate),{
+                    date:lastPaymentDate,
+                    amount,
+              })
+          }catch(err){
+            logger.error("error creating invoice while adding new member", err)
+          }
       
       
       
-      // storing member data
-      await setDoc(doc(db, 'users', uniqueId), {
+      // storing member data in firestore
+          await setDoc(doc(db, 'users', uniqueId), {
             firstName,
             lastName,
             number,
@@ -169,18 +169,17 @@ function AddMember({
             duration:filteredDuration[0].duration
           });
           
-          
           if(editMode){
             toast.success("Member Edit Success")
           }else{
             toast.success("Member Added Successfully")
           }
       } catch (error) {
-        console.log(error);
+        logger.error('error while adding / editing member', error)
       }
     
     
-
+    //  celaring state data after adding new member 
       setEmail('')
       setPassword('')
       setFirstName('')
@@ -205,29 +204,32 @@ function AddMember({
 
   return (
     <div className=" section-container m-6">
+      {/* back button */}
       {!editMode && <BackButton link={'/dashboard/members'}/>}
       <form className="relative space-y-6 bg-white  p-6  max-w-2xl mx-auto rounded-lg shadow-lg">
+        {/* close editmode button */}
       {editMode && <FontAwesomeIcon className=' text-brand-primary absolute cursor-pointer right-3 top-3' icon={faX} 
-      onClick={()=>(
-        
-        setEmail(''),
-        setPassword(''),
-        setFirstName(''),
-        setLastName(''),
-        setAge(''),
-        setGender('Male'),
-        setJoiningDate(''),
-        setNumber(''),
-        setPackagePlan(''),
-        setAmount(''),
-        setEditData(null),
-        setEditMode(false),
-        setEditId(''),
-        setProfileUrl(''),
-        setProfileImgName('')
-      )}
+                  onClick={()=>(
+                    // cearing data in edit mode if user close edit mode without doing editing
+                    setEmail(''),
+                    setPassword(''),
+                    setFirstName(''),
+                    setLastName(''),
+                    setAge(''),
+                    setGender('Male'),
+                    setJoiningDate(''),
+                    setNumber(''),
+                    setPackagePlan(''),
+                    setAmount(''),
+                    setEditData(null),
+                    setEditMode(false),
+                    setEditId(''),
+                    setProfileUrl(''),
+                    setProfileImgName('')
+                  )}
       />}
         <h1 className="text-3xl font-bold text-center mb-10">{editMode? 'Edit' :'Add'} Member</h1>
+        {/* name input */}
         <div className='flex flex-col sm:flex-row gap-4 w-full'>
           <div className='w-full'>
             <label htmlFor='first-name' className="block text-black">First Name</label>
@@ -256,7 +258,7 @@ function AddMember({
             />
           </div>
         </div>
-
+        {/* mobile number , age , gender input */}
         <div className='flex flex-col sm:flex-row gap-4 sm:gap-8'>
             <div className=''>
                 <label className='text-gray-700' htmlFor="MoNumber">Mobile Number</label>
@@ -296,7 +298,7 @@ function AddMember({
                 </select>
             </div>
         </div>
-
+        {/* select package, amount, joining date input */}
         <div className='flex  flex-col sm:flex-row gap-4'>
             <div>
                 <label className='text-gray-700 block' htmlFor="package">Select Package</label>
@@ -343,7 +345,7 @@ function AddMember({
             </div>
            
         </div>
-
+        {/* email and password input */}
         {!editMode && 
         <div className="flex flex-col sm:flex-row gap-4">
           <div className='w-full'>
@@ -372,14 +374,19 @@ function AddMember({
             />
           </div>
         </div>}
-          {!editMode &&  
-          <div className='flex'>
+        {/* select profile image file input */}
+        {!editMode &&  
+        <div className='flex'>
             <label className='mr-8' htmlFor="profile-img">Select Profile Image &nbsp;&#10148;&nbsp;</label>
             {!uploadSuccess && profileImg && <img className='rounded-full w-6 sm:w-8'  src="/images/loading-icon.svg" alt="loading icon" />}
             <input  id='profile-img' type="file" onChange={(e)=>setProfileImg(e.target.files[0])}/>
-          </div>}
+        </div>}
+        {/* form validation error */}
         {formError && <span className='text-red-600 font-bold'>Please fill all the fields</span>}
-        <button type='button' onClick={(e)=>addNewMember(e)} className="w-full  bg-brand-primary text-white p-2 rounded hover:bg-brand-accent">{editMode? 'Edit' :'Add'} Member</button>
+        <button type='button' 
+        onClick={(e)=>addNewMember(e)} 
+        className="w-full  bg-brand-primary text-white p-2 rounded hover:bg-brand-accent">{editMode? 'Edit' :'Add'} 
+        Member</button>
       </form>
     
     </div>

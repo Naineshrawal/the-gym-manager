@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { collection, addDoc, query, where, getDocs, Timestamp, doc, setDoc, getDoc } from 'firebase/firestore';
+import { collection, getDocs,  doc, setDoc} from 'firebase/firestore';
 import { db } from '../../firebase/Firebase';
 import { useUser } from '../../context/UserContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleChevronLeft, faPlus, faSearch, faSquare } from '@fortawesome/free-solid-svg-icons';
-import { set } from 'firebase/database';
+import { faSearch} from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 import ViewAttendance from './ViewAttendance';
+import { logger } from '../logging/Logging';
 
 
 
 const Attendance = () => {
-  const { fetchMembers,membersList, memberLoading } = useUser();
-  const [attendance, setAttendance] = useState([]);
+  const { fetchMembers,membersList, memberLoading,fetchAttendanceRecords,attendance,setAttendance } = useUser();
+  
   const [memberName, setMemberName] = useState('');
   const [date, setDate] = useState('');
   const [view, setView] = useState(false);
@@ -29,28 +29,8 @@ const Attendance = () => {
   },[])
 
 
-  const fetchAttendanceRecords = async (memberId) => {
-
-    try {
-        
-        const docRef =collection( doc(db, 'users' ,`${memberId}`), "memberAttendance")
-        const snapShot = await getDocs(docRef)
-        let attArr = []
-        snapShot.docs.map((doc)=>{
-                attArr.push({...doc.data(), date:doc.id})
-        })
-        setAttendance(attArr)
-
-    // console.log(snapShot.docs.map((doc)=>console.log({...doc.data(), date:doc.id})))
-    
-    } catch (error) {
-      console.error('Error fetching attendance records:', error);
-    }
-    
-    
-  };
   
-
+// regestring attendance of member
     const takeAttendance = async (memberId, status) => {
    
     try {
@@ -62,7 +42,7 @@ const Attendance = () => {
         toast.success('Sent Successfully')
     } catch (err) {
         
-        console.log(err)
+        logger.error('Error taking attendance', err)
     }
     
   };
@@ -216,7 +196,6 @@ const Attendance = () => {
                                             <div  onClick={()=>(
                                                 fetchAttendanceRecords(member.id),
                                                 setView(true),
-                                                setAttendance([]),
                                                 setMemberName(member.data()?.name)
                                                 )} className="inline-flex items-center bg-brand-primary py-1 sm:px-2 px-4 rounded-3xl text-white cursor-pointer">
                                                 {/* <FontAwesomeIcon className='cursor-pointer bg-brand-primary  rounded-full text-white w-4 h-4 p-1  ' icon={faPlus} /> */}

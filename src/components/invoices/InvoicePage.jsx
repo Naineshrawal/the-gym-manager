@@ -3,6 +3,7 @@ import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { faX } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { logger } from '../logging/Logging';
 
 function InvoicePage({
             name,
@@ -34,7 +35,7 @@ function InvoicePage({
                 const imgY = 30;
                 pdf.addImage(imgData, "PNG", imgX, imgY, imgWidth * ratio, imgHeight * ratio);
                 pdf.save("invoice.pdf");
-          });
+          }).catch((err)=>logger.error('error downloading invoice pdf', err))
     }
 
   return (

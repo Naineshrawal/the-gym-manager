@@ -5,6 +5,7 @@ import { faEdit, faSearch, faTrash } from '@fortawesome/free-solid-svg-icons'
 import {  deleteDoc, doc } from 'firebase/firestore'
 import { db } from '../../firebase/Firebase'
 import AddEquipment from './AddEquipment';
+import { logger } from '../logging/Logging'
 
 function Equipments() {
     const [adding, setAdding]= useState(false)
@@ -16,10 +17,19 @@ function Equipments() {
 
     const filteredEquipments = equipmentList?.filter((equp)=>equp.data().equipment.toLowerCase().includes(searchTerm.toLocaleLowerCase()))
     
+
     const deleteEquipment = async (dltdoc)=>{
-        await deleteDoc(doc(db, 'equipments', dltdoc.id))
+        
+        try{
+            await deleteDoc(doc(db, 'equipments', dltdoc.id))
+        }catch(err){
+            logger.error('error deleting equipment', err)
+        }
         fetchEquipments()
     }
+
+
+// fetching equipments list when component did mount
     useEffect(()=>{
         fetchEquipments()
     },[adding])
@@ -31,7 +41,8 @@ function Equipments() {
             {!adding  ? 
             <div className='flex flex-col mt-5'>
                 <div className='shadow-lg rounded-xl bg-white overflow-hidden '>   
-                        <h1 className='text-center font-bold text-brand-neutral text-2xl my-10 '>Equiments List</h1>
+                        <img width={'100px'} className='mx-auto mt-5' src="/images/gym-dumbell.png" alt="" />
+                        <h1 className='text-center font-bold text-brand-neutral text-2xl mb-10 '>Equiments List</h1>
                         {/* equipment search box */}
                         <div className='flex mx-auto mb-4 py-2 pr-4 pl-6 justify-center items-center gap-1 sm:gap-4 border-2 rounded-3xl bg-brand-dark border-gray-600 max-w-[300px] sm:max-w-[400px]'>
                             <input className='border-gray-300 rounded border-2 outline-none grow' id='search-trainer' type="text" onChange={(e)=>setSearchTerm(e.target.value)} />

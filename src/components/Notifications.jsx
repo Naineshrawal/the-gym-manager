@@ -2,16 +2,16 @@ import { faBell, faCircleXmark, faX } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useEffect} from 'react'
 import { useUser } from '../context/UserContext'
-import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { db } from '../firebase/Firebase'
 import { doc, updateDoc } from 'firebase/firestore'
+import { logger } from './logging/Logging'
 
 function Notifications() {
 
   const {fetchMembers, membersList } = useUser()
   
-
+// sinding notification to user in firebase
   const sendNotification =async (member)=>{
     try {
       const memberRef = doc(db, 'users', member.id);
@@ -20,7 +20,7 @@ function Notifications() {
       });
       toast.success(`Notification sent to member ${member.data().firstName}`);
     } catch (error) {
-      console.error('Error sending notification:', error);
+      logger.error('Error sending notification:', error);
       toast.error('Failed to send notification.');
     }
     

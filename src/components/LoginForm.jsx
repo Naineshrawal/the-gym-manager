@@ -2,6 +2,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import React, { useRef, useState } from 'react';
 import { auth } from '../firebase/Firebase';
 import { useNavigate } from 'react-router-dom';
+import { logger } from './logging/Logging';
 
 function LoginForm() {
   const [email, setEmail] = useState('');
@@ -18,12 +19,11 @@ function LoginForm() {
         setEmail('')
         setPassword('')
       
+      logger.info("user logged in successfully", userCredentials)
       navigate('/dashboard/overview')
     }
     catch(err){
-      // console.log(err);
-      
-      
+      logger.error("error signing in", err)
       setError('Invalid Credentials')
      
     }

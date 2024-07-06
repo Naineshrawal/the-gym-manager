@@ -10,7 +10,7 @@ function Home() {
   return (
     <main className="section-container  w-full bg-black flex items-center justify-center md:justify-start bg-no-repeat  bg-center bg-cover bg-hero min-h-[100vh]" >
         {!user ? <div className="bg-white/50 p-8 rounded shadow-md w-full max-w-xs  md:ml-20">
-          <h2 className="text-2xl font-bold mb-6 text-center ">ADMIN LOGIN</h2>
+          <h2 className="text-2xl font-bold mb-6 text-center ">LOGIN</h2>
           
             <LoginForm/>
           

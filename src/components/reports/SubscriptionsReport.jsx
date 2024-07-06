@@ -80,31 +80,31 @@ const handleClear = () => {
     <div className='m-6 min-h-screen'>
         <BackButton link={'/dashboard/reports'}/>
         <div className='border-2 bg-white border-gray-200'>
-            <div className='border px-2 rounded flex justify-end py-1'>
-                <input
-                    id="search"
-                    type="text"
-                    className=' outline-none border px-1'
-                    placeholder="Filter By Name"
-                    aria-label="Search Input"
-                    value={filterText}
-                    onChange={e=>setFilterText(e.target.value)}
-                />
-                <button className='bg-brand-primary px-2 text-white' type="button" onClick={handleClear}>
-                    X
-                </button>
-            </div>
-            <DataTable
-            columns={columns}
-            data={filteredList}
-            pagination
-            paginationResetDefaultPage={resetPaginationToggle}
-            progressPending={memberLoading}
-            // actions={actionsMemo}
-            fixedHeader
-            fixedHeaderScrollHeight="800px"
-            selectableRows persistTableHead
-            />
+                    <div className='border px-2 rounded flex justify-end py-1'>
+                        <input
+                            id="search"
+                            type="text"
+                            className=' outline-none border px-1'
+                            placeholder="Filter By Name"
+                            aria-label="Search Input"
+                            value={filterText}
+                            onChange={e=>setFilterText(e.target.value)}
+                        />
+                        <button className='bg-brand-primary px-2 text-white' type="button" onClick={handleClear}>
+                            X
+                        </button>
+                    </div>
+                    <DataTable
+                        columns={columns}
+                        data={filteredList}
+                        pagination
+                        paginationResetDefaultPage={resetPaginationToggle}
+                        progressPending={memberLoading}
+                        // actions={actionsMemo}
+                        fixedHeader
+                        fixedHeaderScrollHeight="800px"
+                        selectableRows persistTableHead
+                    />
         </div>
     </div>
   )

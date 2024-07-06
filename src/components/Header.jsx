@@ -21,9 +21,7 @@ function Header() {
             <li><Link to="/" className="hover:text-brand-secondary text-xl">Home</Link></li>
             <li><Link to="/about" className="hover:text-brand-secondary text-xl">About</Link></li>
             <li><Link to="/contact" className=" text-xl">Contact</Link></li>
-            {user && <><li><Link to="/store" className="hover:text-brand-secondary text-xl">Store</Link></li>
-            <li><Link to="/cart" className="hover:text-brand-secondary text-xl">Cart</Link></li>
-            <li><Link to="/dashboard/overview" className="hover:text-brand-secondary text-xl">Dashboard</Link></li></>}
+            <li><Link to="/dashboard/overview" className="hover:text-brand-secondary text-xl">Dashboard</Link></li>
           </ul>
         </nav>
       </div>

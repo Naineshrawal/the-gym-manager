@@ -5,6 +5,7 @@ import { faEdit, faSearch, faTrash } from '@fortawesome/free-solid-svg-icons'
 import {  deleteDoc, doc } from 'firebase/firestore'
 import { db } from '../../firebase/Firebase'
 import AddPackage from './AddPackage'
+import { logger } from '../logging/Logging'
 
 function Packages() {
     const [adding, setAdding]= useState(false)
@@ -16,18 +17,17 @@ function Packages() {
 
     const filteredPackages = packageList?.filter((packageItem)=>packageItem.data().name.toLowerCase().includes(searchTerm.toLocaleLowerCase()))
     
-    
+// deleting package
     const deletePackage = async (dltdoc)=>{
         try{
             await deleteDoc(doc(db, 'packages', dltdoc.id))
-                       
-            
             fetchPackages()
         }catch(err){
-            console.log(err);
-            console.log('err');
+            logger.error("error while deleting package", err)
         }
     }
+
+// fetching package list when component did mount
     useEffect(()=>{
         fetchPackages()
     },[editing, adding, setAdding ])

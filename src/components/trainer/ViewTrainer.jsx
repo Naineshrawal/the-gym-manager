@@ -9,37 +9,43 @@ import { toast } from 'react-toastify';
 import AddTrainer from './AddTrainer';
 import { useNavigate } from 'react-router-dom';
 import { deleteObject, ref } from 'firebase/storage';
+import { logger } from '../logging/Logging';
 
 const ViewTrainer =  () => {
-  const {TrainerLoading,fetchTrainer,trainerList,user} = useUser()
-  const [editMode, setEditMode] = useState(false)
-  const [editData, setEditData] = useState('')
-  const [editId, setEditId] = useState('')
-  const [searchTerm,setSearchTerm] = useState('')
+        const {TrainerLoading,fetchTrainer,trainerList,user} = useUser()
+        const [editMode, setEditMode] = useState(false)
+        const [editData, setEditData] = useState('')
+        const [editId, setEditId] = useState('')
+        const [searchTerm,setSearchTerm] = useState('')
 
-  const filteredTrainers = trainerList?.filter((trainer)=>
-    (trainer.data().firstName+trainer.data().lastName).toLowerCase().includes(searchTerm.toLocaleLowerCase()))
-  
-  const navigate = useNavigate()
-  
-  const deleteTrainer = async (id, profileImgName)=>{
-    // deleting trainer from datastore
-    await  deleteDoc(doc(db, 'users', id))
+        const filteredTrainers = trainerList?.filter((trainer)=>
+          (trainer.data().firstName+trainer.data().lastName).toLowerCase().includes(searchTerm.toLocaleLowerCase()))
+        
+        const navigate = useNavigate()
+        
+        // deleting trainer from datastore
+        const deleteTrainer = async (id, profileImgName)=>{
+          try{
+            await  deleteDoc(doc(db, 'users', id))
 
-    // deleting trainer profile img from storage
-    const imgRef = ref(imageDb, `images/${profileImgName}`)
-      await deleteObject(imgRef).catch(err=>console.log(err))
+          // deleting trainer profile img from storage
+            const imgRef = ref(imageDb, `images/${profileImgName}`)
+            await deleteObject(imgRef).catch(err=>console.log(err))
+          }catch(err){
+            logger.error("error while deleting trainer data from firestore", err)
+          }
 
-    toast.success("Trainer Deleted")
-    fetchTrainer()
-  }
-
-  const getFormatedDate = (date)=>{
-      return date.slice(8) + '-' + date.slice(5,7) + '-' + date.slice(0,4)
-  }
-    useEffect(()=>{
-      fetchTrainer()
-    },[])
+          toast.success("Trainer Deleted")
+          fetchTrainer()
+        }
+        // formating date in indian standard
+        const getFormatedDate = (date)=>{
+            return date.slice(8) + '-' + date.slice(5,7) + '-' + date.slice(0,4)
+        }
+        // fetching member list while component did mount
+        useEffect(()=>{
+          fetchTrainer()
+        },[])
   return (
     <>
       {editMode?

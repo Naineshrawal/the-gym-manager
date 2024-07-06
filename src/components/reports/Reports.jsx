@@ -13,17 +13,12 @@ function Reports() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
             <Link
               to="/dashboard/subscriptions-report"
-              className="flex flex-col items-center bg-[#ffd166] p-6 rounded-lg shadow-lg hover:bg-[#06d6a0] transition duration-300  text-brand-dark"
-            >
+              className="flex flex-col items-center bg-[#ffd166] p-6 rounded-lg shadow-lg hover:bg-[#06d6a0] transition duration-300  text-brand-dark">
               <FontAwesomeIcon icon={faReceipt} size="2x" />
               <p className="mt-2">Subscriptions Report</p>
             </Link>
-            
-           
           </div>
-    
-          
-        </div>
+    </div>
   )
 }
 

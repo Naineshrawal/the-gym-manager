@@ -11,9 +11,18 @@ const Trainer = () => {
   
   return (
     <div className="p-8 section-container bg-gray-100 min-h-screen">
-      <h2 className="text-3xl font-bold text-gray-800">Hello Admin</h2>
-      <p className="mt-2 text-gray-600">Manage Trainers For Your Gym</p>
+      <div className='flex sm:flex-row flex-col gap-4 items-center'>
+            
+          <img width={'100px'} src="/images/weight-lifting.png" alt="" />
+          <div >
+            <h2 className="text-3xl font-bold text-gray-800">Hello Admin</h2>
+            <p className="mt-2 text-gray-600">Manage Trainers For Your Gym</p>
+            </div>
+          </div>
+      
+      
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
+        {/* conditional rendering for user admin */}
         {user.role === 'admin' && 
           <Link
           to="/dashboard/add-trainer"

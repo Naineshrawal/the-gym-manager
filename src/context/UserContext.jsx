@@ -4,6 +4,7 @@ import { auth, db } from '../firebase/Firebase';
 import { useNavigate } from 'react-router-dom';
 import { collection, doc, getDoc, getDocs, query, setDoc, where, } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
+import { logger } from '../components/logging/Logging';
 
 const UserContext = createContext();
 
@@ -11,7 +12,7 @@ const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [invoiceId, setInvoiceId] = useState('')
+  
 
   const [trainerList, setTrainerList] = useState([])
   const [TrainerLoading, setTrainerLoading] = useState(false)
@@ -25,9 +26,11 @@ export const UserProvider = ({ children }) => {
   const [equipmentList, setEquipmentList] = useState([])
   const [equipmentLoading, setEquipmentLoading] = useState(false)
 
+  const [invoiceId, setInvoiceId] = useState('')
   const [invoiceList, setInvoiceList] = useState([])
   const [invoiceLoading, setInvoiceLoading] = useState(false)
   
+  const [attendance, setAttendance] = useState([])
   let notificationsArr = []
 
   const navigate = useNavigate();
@@ -47,7 +50,7 @@ export const UserProvider = ({ children }) => {
       setMemberLoading(false)
     } catch (error) {
       setMemberLoading(false)
-      console.log(error);
+      logger.error("error fetching member in userContext", error)
     }
   }
   const fetchTrainer = async () => {
@@ -63,7 +66,7 @@ export const UserProvider = ({ children }) => {
       setTrainerLoading(false)
     } catch (error) {
       setTrainerLoading(false)
-      console.log(error);
+      logger.error("error fetching trainer in userContext", error)
     }
   }
   const addingPackage = async ({ name, amount, duration, description, editId }) => {
@@ -78,7 +81,7 @@ export const UserProvider = ({ children }) => {
       });
 
     } catch (err) {
-      console.log(err);
+      logger.error("error adding package in userContext", err)
     }
   }
   const fetchPackages = async () => {
@@ -91,8 +94,8 @@ export const UserProvider = ({ children }) => {
       setPackageLoading(false)
       return packageArr
     } catch (err) {
-      console.log(err);
       setPackageLoading(false)
+      logger.error("error fetching package in userContext", err)
     }
 
   }
@@ -112,7 +115,7 @@ export const UserProvider = ({ children }) => {
       });
       uniqueId = Date.now()
     } catch (err) {
-      console.log(err);
+      logger.error("error adding equipment in userContext", err)
     }
   }
   const fetchEquipments = async () => {
@@ -124,8 +127,8 @@ export const UserProvider = ({ children }) => {
       setEquipmentList(equipmentArr)
       setEquipmentLoading(false)
     } catch (err) {
-      console.log(err);
       setEquipmentLoading(false)
+      logger.error("error fetching equipment in userContext", err)
     }
 
   }
@@ -141,14 +144,37 @@ export const UserProvider = ({ children }) => {
         setInvoiceList(invcArr);
         setInvoiceLoading(false)
       }catch(err){
-        console.log(err);
         setInvoiceLoading(false)
+        logger.error("error getting invoice in userContext", err)
       }
+      
+      
   }
+  // fetching attendance record of perticular member
+  const fetchAttendanceRecords = async (memberId) => {
+
+    try {
+        
+        const docRef =collection( doc(db, 'users' ,`${memberId}`), "memberAttendance")
+        const snapShot = await getDocs(docRef)
+        let attArr = []
+        snapShot.docs.map((doc)=>{
+                attArr.push({...doc.data(), date:doc.id})
+        })
+        setAttendance(attArr)
+
+   
+    
+    } catch (error) {
+      logger.error('Error fetching attendance records:', error);
+    }
+    
+    
+  };
 
   
 
-
+// getting current user on auth state changed
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async user => {
       if (user) {
@@ -187,7 +213,7 @@ export const UserProvider = ({ children }) => {
       packageLoading, addingPackage, fetchPackages, packageList,
       equipmentList, addingEquipment, equipmentLoading, fetchEquipments,
       getInvoices,invoiceList, invoiceLoading,invoiceId, setInvoiceId,
-      notificationsArr,
+      notificationsArr,fetchAttendanceRecords,attendance,setAttendance,
     }}>
       {children}
     </UserContext.Provider>

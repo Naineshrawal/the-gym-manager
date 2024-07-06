@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {  faX } from '@fortawesome/free-solid-svg-icons'
 import { toast } from 'react-toastify'
+import { logger } from '../logging/Logging'
 
 function AddEquipment({
     editing, 
@@ -40,7 +41,7 @@ function AddEquipment({
     
 
     
-    
+    // editing datat to state for edit mode 
         useEffect(()=>{
             if(editData){
                 setEquipment(editData.equipment)
@@ -51,11 +52,9 @@ function AddEquipment({
                 
         }
         },[editData])
+
         const addNewEquipment = async ()=>{
-            // if(!editData){
-            //     installedDate = getToday()
-            //    console.log('no edit');
-            // }
+            // adding equipment to firestore
                 try{
                     await addingEquipment({
                         equipment,
@@ -73,7 +72,7 @@ function AddEquipment({
                     }
                     setInstalledDate(getToday)
                 }catch(err){
-                console.log(err);
+                logger.error("error in adding/editing equipment", err)
                 }
                     setEquipment('')
                     setWeight('')

@@ -35,7 +35,7 @@ const Dashboard = () => {
       <aside className={`${asideWidth} duration-500  top-0  bg-[#12313b] text-white flex flex-col`}>
         <nav className="flex-grow relative">
           {/* close aside icon */}
-          <div onClick={toggleWidth} className={`absolute  -right-5 py-4 rounded-r-full pr-3    cursor-pointer top-[50vh] -translate-y-[50%] bg-[#12313b]`}>
+          <div onClick={toggleWidth} className={`absolute  -right-5 py-4 rounded-r-full pr-3    cursor-pointer top-[50vh] z-10 -translate-y-[50%] bg-[#12313b]`}>
             <FontAwesomeIcon  className={`${rotate} duration-700`} icon={faChevronRight} />
           </div>
           
