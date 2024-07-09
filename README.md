@@ -6,7 +6,7 @@ Gym Manager is a web application designed to streamline the management of gym op
 ## To Explore The Functionalities
 
 - Here is the some user credentials to login ad check the funcyionalities
-- 
+  
 Admin Login
 email: nainesh@gmail.com
 password: Admin@123
