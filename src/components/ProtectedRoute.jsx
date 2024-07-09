@@ -7,11 +7,12 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user } = useUser();
 
   if (!user) {
-    
-    return <Navigate to="/login" />;
+    console.log('navigating to home');
+    return <Navigate to="/" />;
   }
 
   if (!allowedRoles.includes(user.role)) {
+    console.log('navigating to home 2');
     
     return <Navigate to="/" />;
   }

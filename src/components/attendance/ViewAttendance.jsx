@@ -11,7 +11,6 @@ function ViewAttendance({attendance,
         const {user} = useUser()
     const months = ['JAN','FAB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC']
  
-    
   return (
     <>
         <div className="section-container  m-5 min-h-screen">

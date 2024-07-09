@@ -144,7 +144,7 @@ const Attendance = () => {
                                                 fetchAttendanceRecords(member.id),
                                                 setView(true),
                                                 setAttendance([]),
-                                                setMemberName(member.data()?.name)
+                                                setMemberName(member.data()?.firstName + ' ' + member.data()?.lastName)
                                                 )} className="inline-flex items-center bg-brand-primary py-1 px-2 rounded-3xl text-white cursor-pointer">
                                                 {/* <FontAwesomeIcon className='cursor-pointer bg-brand-primary  rounded-full text-white w-4 h-4 p-1  ' icon={faPlus} /> */}
                                                 <span>View Attendace</span>
@@ -196,7 +196,7 @@ const Attendance = () => {
                                             <div  onClick={()=>(
                                                 fetchAttendanceRecords(member.id),
                                                 setView(true),
-                                                setMemberName(member.data()?.name)
+                                                setMemberName(member.data()?.firstName + ' ' + member.data()?.lastName)
                                                 )} className="inline-flex items-center bg-brand-primary py-1 sm:px-2 px-4 rounded-3xl text-white cursor-pointer">
                                                 {/* <FontAwesomeIcon className='cursor-pointer bg-brand-primary  rounded-full text-white w-4 h-4 p-1  ' icon={faPlus} /> */}
                                                 <span>View Attendace</span>
