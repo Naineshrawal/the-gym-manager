@@ -3,6 +3,23 @@
 
 Gym Manager is a web application designed to streamline the management of gym operations. It offers a range of features including member management, trainer management, billing, attendance tracking, notifications, and a responsive, elegant dashboard for admins, trainers, and members.
 
+## To Explore The Functionalities
+
+- Here is the some user credentials to login ad check the funcyionalities
+Admin Login
+email: nainesh@gmail.com
+password: Admin@123
+
+Member Login
+email: member3@member.com
+password: Member@123
+
+Trainer Login
+email : testtrainer123@gmail.com
+password : Trainer@123
+
+
+
 
 
 
